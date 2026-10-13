@@ -160,7 +160,8 @@ chosen among `captures/`.
 
 ## Where this stands
 
-Version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: extracted, checked (bench: 220 checks, editor bench: 13), installed back into the
+Version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
+merged into `main`, checked (bench: 220 checks, editor bench: 13), installed back into the
 template (its own bench: 52 checks). The GitHub repository is private like the other add-ons.
 Not yet submitted to the Asset Store: making the repository public and filling in the store
 page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage
