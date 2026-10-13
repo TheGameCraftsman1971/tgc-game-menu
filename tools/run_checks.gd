@@ -710,8 +710,36 @@ func _check_saves() -> void:
 	_expect(world.player_position() == Vector2(300, 400), "where the save had it")
 
 	world.place_player(Vector2(10, 10))
+	session.pause()
+	menu.show_page(&"gameplay")
+	session.resume()
+	session.progress_at_risk = true
 	session._unhandled_input(_key(KEY_F9))
-	_expect(world.player_position() == Vector2(500, 600) and events[1] == 2, "F9 loads the latest quick save, without asking")
+	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_QUICK_LOAD" and events[1] == 1,
+			"F9 over a game at risk asks first")
+	var shown := menu.page_ids().filter(func(id: StringName) -> bool: return menu.page(id).visible)
+	_expect(get_tree().paused and menu.is_open() and not (menu.get_node("%Root") as Control).visible
+			and shown.is_empty() and not (menu.get_node("%Settings") as Control).visible,
+			"freezing the game, the modal alone over it, no page left behind", str(shown))
+	session.toggle_pause()
+	_expect(not menu.is_confirming() and not menu.is_open() and not get_tree().paused
+			and world.player_position() == Vector2(10, 10), "Esc gives up: the game goes on, untouched")
+	session._unhandled_input(_key(KEY_F9))
+	accept.pressed.emit()
+	_expect(world.player_position() == Vector2(500, 600) and events[1] == 2 and not get_tree().paused
+			and not menu.is_open(), "accepted, F9 loads the latest quick save, and the game goes on")
+	_expect(session.toast().message() == tr("TGC_QUICK_LOADED"), "which the screen says")
+	world.place_player(Vector2(20, 20))
+	session._unhandled_input(_key(KEY_F9))
+	_expect(not menu.is_confirming() and world.player_position() == Vector2(500, 600) and events[1] == 3,
+			"right after a load, nothing is at risk: F9 loads at once")
+	session.pause()
+	session.progress_at_risk = true
+	session._unhandled_input(_key(KEY_F9))
+	(menu.get_node("%Cancel") as Button).pressed.emit()
+	_expect(menu.is_open() and get_tree().paused and menu.current_page() == TgcGameMenu.ROOT
+			and (menu.get_node("%Root") as Control).visible, "asked in the pause menu, \"Cancel\" goes back to it")
+	session.resume()
 
 	world.jump()
 	_expect(session.quick_save() == ERR_BUSY and session.toast().message() == tr("TGC_CANNOT_SAVE"),

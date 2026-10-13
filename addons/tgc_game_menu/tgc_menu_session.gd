@@ -333,7 +333,10 @@ func quick_save() -> Error:
 	return error
 
 
-## Loads the most recent quick save. Without a question: that is what a quick load is for.
+## Loads the most recent quick save — after asking, if the game in progress would lose
+## something ([method needs_confirmation]). The question pauses the game, over which the menu
+## shows nothing but the modal; "Cancel" puts everything back as it was. OK when the question
+## is asked: the answer does the rest.
 func quick_load() -> Error:
 	var latest: TgcSaveSlot = null
 	for slot in existing_saves():
@@ -344,9 +347,30 @@ func quick_load() -> Error:
 		if not quick_slots().is_empty():
 			notify("TGC_NO_QUICK_SAVE")
 		return ERR_DOES_NOT_EXIST
-	var error := load_from(latest)
+	if needs_confirmation():
+		_ask_quick_load(latest)
+		return OK
+	return _quick_load(latest)
+
+
+func _quick_load(slot: TgcSaveSlot) -> Error:
+	var error := load_from(slot)
 	notify("TGC_QUICK_LOADED" if error == OK else "TGC_LOAD_FAILED")
 	return error
+
+
+## Asks before a quick load. Asked during the game, the question freezes it, and "Cancel"
+## lets it go on; asked in the menu, "Cancel" goes back to the page one was on.
+func _ask_quick_load(slot: TgcSaveSlot) -> void:
+	var over_game := not is_paused()
+	if over_game:
+		_set_paused(true)
+	var give_up := func() -> void:
+		if over_game:
+			_menu.close()
+			_set_paused(false)
+	_menu.confirm("TGC_CONFIRM_QUICK_LOAD", "TGC_LOAD", "TGC_CONFIRM_LOSS",
+			_quick_load.bind(slot), null, give_up)
 
 
 ## Shows a short message on screen, a key of the catalogue, if the config wants them.

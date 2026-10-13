@@ -7,7 +7,9 @@
   shortcuts (F5, F9, added to the Controls page), optional **Delete** (`allow_delete_saves`),
   a short message on screen after a shortcut. The game does the saving through a
   `TgcSaveProvider` it hands to the session; the menu never knows how.
-- Loading over a game at risk, overwriting a save and deleting one ask first.
+- Loading over a game at risk — from the Load page or with the quick load —, overwriting a
+  save and deleting one ask first. The quick load's question freezes the game under the modal
+  alone; "Cancel" lets it go on.
 - `progress_at_risk` is kept by the session: false after a save or a load, true again as
   soon as the game runs.
 

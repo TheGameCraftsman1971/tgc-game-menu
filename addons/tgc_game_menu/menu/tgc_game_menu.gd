@@ -93,7 +93,8 @@ var _root_pages: Array[StringName] = []
 var _page := ROOT
 ## What the open confirmation will do, and the button that asked for it.
 var _pending := Callable()
-var _asker: Button
+var _on_cancel := Callable()
+var _asker: Control
 
 
 ## Called by the session **before** the menu enters the tree.
@@ -149,9 +150,14 @@ func open(in_game: bool) -> void:
 func close() -> void:
 	if _pages.has(_page):
 		_pages[_page].leave()
-	# The menu always reopens at its root, with the focus on its first button.
+	# The menu always reopens at its root, with the focus on its first button; and nothing of
+	# the page left must show if the menu is shown again for a lone question.
 	_page = ROOT
 	_hide_confirmation()
+	_root.visible = true
+	_settings.visible = false
+	for id: StringName in _pages:
+		_pages[id].visible = false
 	visible = false
 
 
@@ -228,18 +234,22 @@ func show_page(target: StringName) -> void:
 
 ## Opens the modal: `question` and `detail` (keys; an empty detail hides its line), "Cancel"
 ## and a button saying `label`, which calls `on_accept`. "Cancel", Esc or B give the focus
-## back to `asker`. What a page calls before an action that cannot be undone.
-func confirm(question: String, label: String, detail: String, on_accept: Callable, asker: Button) -> void:
+## back to `asker` (by default, whatever had it) and call `on_cancel`. What a page calls before
+## an action that cannot be undone, and the session before a quick load: the menu shows
+## itself for it if it was closed, with nothing but the modal.
+func confirm(question: String, label: String, detail: String, on_accept: Callable,
+		asker: Control = null, on_cancel := Callable()) -> void:
 	_pending = on_accept
-	_asker = asker
+	_on_cancel = on_cancel
+	_asker = asker if asker != null else get_viewport().gui_get_focus_owner()
+	visible = true
 	_question.text = question
 	_detail.text = detail
 	_detail.visible = detail != ""
 	_confirm_action.text = label
 	_root.visible = false
 	for id: StringName in _pages:
-		if id == _page:
-			_pages[id].visible = false
+		_pages[id].visible = false
 	_settings.visible = false
 	_confirm_layer.visible = true
 	_cancel.grab_focus()
@@ -271,9 +281,12 @@ func _accept() -> void:
 ## Gives up, and gives the focus back to the button that asked.
 func _dismiss() -> void:
 	var asker := _asker
+	var on_cancel := _on_cancel
 	_hide_confirmation()
-	if asker != null and asker.is_visible_in_tree():
+	if asker != null and is_instance_valid(asker) and asker.is_visible_in_tree():
 		asker.grab_focus()
+	if on_cancel.is_valid():
+		on_cancel.call()
 
 
 func _hide_confirmation() -> void:
@@ -284,6 +297,7 @@ func _hide_confirmation() -> void:
 			_pages[_page].visible = true
 	_confirm_layer.visible = false
 	_pending = Callable()
+	_on_cancel = Callable()
 	_asker = null
 
 

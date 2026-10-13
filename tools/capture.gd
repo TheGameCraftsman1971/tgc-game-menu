@@ -60,6 +60,11 @@ func _ready() -> void:
 		session.quick_save()
 		await _wait(0.4)
 		await _shot("%s_%02d_game" % [locale, index])
+		session.progress_at_risk = true
+		session.quick_load()
+		await _wait(0.2)
+		await _shot("%s_%02db_quick_load" % [locale, index])
+		menu.back()
 		session.pause()
 		await _wait(0.3)
 		await _shot("%s_%02d_pause" % [locale, index + 1])

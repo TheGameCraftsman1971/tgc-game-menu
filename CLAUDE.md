@@ -79,7 +79,8 @@ What it has already decided here, and which must not be quietly undone:
   whole contract (save, load, delete, describe, can_save), handed over in code. The add-on
   numbers the slots (`TgcSaveSlot.id`) and stores nothing in them. Loading **starts a game**
   (`game_started`) and then restores over it, so a game loads exactly as it starts. The quick
-  load does not ask: that is what it is for. `progress_at_risk` is the session's, kept from
+  load asks too when the game is at risk: the modal is shown alone over the frozen game, and
+  "Cancel" lets it go on (or goes back to the page, asked from the menu). `progress_at_risk` is the session's, kept from
   `_process`: a frame played since the last save is a frame "Main menu" would lose.
 - **§11 — YAGNI.** Four built-in pages and an extension point (`TgcMenuPage`,
   `extra_pages`). A game-specific setting is the game's: its own Resource, its own page, its
@@ -126,6 +127,7 @@ chosen among `captures/`.
 | The wait for an input read in `_unhandled_input` | the left click cannot be bound, the hovered button takes it | read it in `_input`, keep presses only |
 | Default inputs read from the InputMap | "Reset" restores what an earlier instance remapped | read them from `ProjectSettings` (`input/<action>`); an undeclared action is snapshotted when the bindings are built |
 | A property set **after** `add_child` | `_ready()` has already read the player's files | set `TgcMenuSession.config` before `add_child` |
+| **A menu closed on a page** | the page stays marked visible, and shows through the next modal shown alone | `close()` puts the menu back to its root, every page hidden; the modal hides them all |
 | A page built before `setup()` | `_ready()` finds no session | the menu calls `setup(session)` **before** adding the page; the session does the same for the menu |
 | The tree's root is pausable, but a bench parent may not be | a game under a `PROCESS_MODE_ALWAYS` bench node never pauses | the demo's `World` declares `process_mode = PAUSABLE` itself |
 | A lambda captures locals **by value** | a signal counter stays at zero, and the check passes | count in an array |
@@ -145,7 +147,7 @@ chosen among `captures/`.
 
 ## Where this stands
 
-Version **1.1.0** (saves) after **1.0.0**, the first: extracted, checked (bench: 192 checks), installed back into the
+Version **1.1.0** (saves) after **1.0.0**, the first: extracted, checked (bench: 198 checks), installed back into the
 template (its own bench: 52 checks). The GitHub repository is private like the other add-ons.
 Not yet submitted to the Asset Store: making the repository public and filling in the store
 page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage

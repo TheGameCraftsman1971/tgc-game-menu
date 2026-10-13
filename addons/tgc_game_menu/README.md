@@ -137,8 +137,9 @@ _session.saves = MySaves.new(...)
   overwriting. **Load** lists every save, regular and quick, the most recent first, and asks
   before abandoning a game whose progress is at risk. **Delete** always asks.
 - **The quick save** (F5) writes the first empty quick slot, else the oldest; **the quick load**
-  (F9) loads the most recent quick save, without asking — that is what it is for. Both work
-  during a game, menu open or not, and say what happened on screen.
+  (F9) loads the most recent quick save. Both work during a game, menu open or not, and say
+  what happened on screen. If the game has run since it was last saved, the quick load asks
+  first: the game freezes under the modal alone, and *Cancel* lets it go on.
 - An autosave is `session.save_to(slot)`, from your own code.
 
 The demo's `demo/demo_saves.gd` is a complete provider: one small file per slot, read back

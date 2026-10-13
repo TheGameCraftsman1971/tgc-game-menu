@@ -62,6 +62,7 @@ TGC_NO_SAVES,No save yet.,Aucune sauvegarde.,Noch kein Spielstand.,Aún no hay p
 TGC_CONFIRM_OVERWRITE,Overwrite this save?,Écraser cette sauvegarde ?,Diesen Spielstand überschreiben?,¿Sobrescribir esta partida guardada?
 TGC_CONFIRM_OVERWRITE_DETAIL,It will be replaced by the game in progress.,Elle sera remplacée par la partie en cours.,Er wird durch das laufende Spiel ersetzt.,Se reemplazará por la partida en curso.
 TGC_CONFIRM_LOAD,Load this save?,Charger cette sauvegarde ?,Diesen Spielstand laden?,¿Cargar esta partida guardada?
+TGC_CONFIRM_QUICK_LOAD,Load the quick save?,Charger la sauvegarde rapide ?,Die Schnellspeicherung laden?,¿Cargar el guardado rápido?
 TGC_CONFIRM_DELETE,Delete this save?,Supprimer cette sauvegarde ?,Diesen Spielstand löschen?,¿Borrar esta partida guardada?
 TGC_CONFIRM_DELETE_DETAIL,It cannot be recovered.,Elle ne pourra pas être récupérée.,Er kann nicht wiederhergestellt werden.,No se podrá recuperar.
 TGC_SAVED,Game saved.,Partie sauvegardée.,Spiel gespeichert.,Partida guardada.
