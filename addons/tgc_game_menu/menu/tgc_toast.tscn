@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/tgc_game_menu/menu/tgc_toast.gd" id="1_toast"]
+
+[node name="TgcToast" type="CanvasLayer"]
+process_mode = 3
+layer = 60
+script = ExtResource("1_toast")
+
+[node name="Frame" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Top" type="MarginContainer" parent="Frame"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 120.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/margin_top = 36
+
+[node name="Centre" type="CenterContainer" parent="Frame/Top"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Frame/Top/Centre"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Message" type="Label" parent="Frame/Top/Centre/Panel"]
+unique_name_in_owner = true
+layout_mode = 2
+auto_translate_mode = 2
+horizontal_alignment = 1

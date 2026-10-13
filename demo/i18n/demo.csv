@@ -7,3 +7,4 @@ ACTION_JUMP,Jump,Sauter
 DEMO_HELP,Move: %s · Jump: %s · Pause: %s,Se déplacer : %s · Sauter : %s · Pause : %s
 DEMO_GAMEPLAY,Gameplay,Partie
 DEMO_SHOW_HELP,On-screen help,Aide à l'écran
+DEMO_SAVE_SUMMARY,"Square at %d, %d","Carré en %d, %d"

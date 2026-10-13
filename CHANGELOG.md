@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.0 — 2026-10-13
+
+- Saving and loading, off by default (`enable_saves`): **Save** and **Load** pages at the
+  root, a number of regular and quick slots, quick save and quick load on remappable
+  shortcuts (F5, F9, added to the Controls page), optional **Delete** (`allow_delete_saves`),
+  a short message on screen after a shortcut. The game does the saving through a
+  `TgcSaveProvider` it hands to the session; the menu never knows how.
+- Loading over a game at risk, overwriting a save and deleting one ask first.
+- `progress_at_risk` is kept by the session: false after a save or a load, true again as
+  soon as the game runs.
+
 ## 1.0.0 — 2026-10-13
 
 First version, extracted from the TheGameCraftsman Godot project template, where the menu,

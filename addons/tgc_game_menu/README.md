@@ -23,8 +23,12 @@ from a single resource.
   position), gamepad buttons for both families of pads ("A / Cross").
 - **Confirmation before losing a game.** During a game, *New game*, *Main menu* and *Quit*
   first ask, in a modal whose focus starts on *Cancel* and cannot wander off. *Quit* asks
-  from the main menu too. A game that
-  has just saved can say there is nothing to lose (`progress_at_risk = false`).
+  from the main menu too. Right after a save or a load, there is nothing to lose, and
+  nothing is asked.
+- **Saving and loading, optional**: *Save* and *Load* pages listing the slots with their
+  date and your summary, quick save and quick load on remappable shortcuts (F5, F9), a
+  number of slots of each kind, optional *Delete*. **Your code does the saving**: the menu
+  only calls it.
 - **Your own pages** after the built-in ones, each with its button in the sub-menu.
 - **Settings saved at each change and read back without trusting the file**: wrong types,
   values off the list, unreadable inputs all fall back on the defaults instead of crashing.
@@ -88,10 +92,57 @@ the Inspector, and assign it to the session's `config`. Everything has a working
 | | `show_gamepad_column` | Off for a game not played with a gamepad. |
 | | `capture_timeout` | Seconds the Controls page waits for an input. |
 | | `gamepad_ui_buttons` | Give `ui_accept` / `ui_cancel` the A / B buttons when they have none. |
+| Saves | `enable_saves` | *Save*, *Load*, the quick save and the quick load. Off by default. |
+| | `save_slots` | Slots of the *Save* page (0: quick saves only). |
+| | `quick_save_slots` | Slots the quick save writes in turn: the empty one first, then the oldest (0: no quick save). |
+| | `allow_delete_saves` | A *Delete* button on each save, which asks first. |
+| | `quick_save_action`, `quick_load_action` | The shortcuts' actions, added to the Controls page. Created with F5 and F9 if your project does not declare them. |
+| | `show_save_notifications` | A short message on screen after a quick save or a quick load. |
 | Files | `*_file` | Where the settings are saved (`user://settings_*.cfg`). |
 
 The remappable actions must be declared in *Project Settings > Input Map*: their inputs
 there are the defaults that *Restore default controls* brings back.
+
+## Saving and loading
+
+The add-on never knows how your game is saved. Turn `enable_saves` on, extend
+**TgcSaveProvider**, and hand an instance to the session:
+
+```gdscript
+class_name MySaves
+extends TgcSaveProvider
+
+func save_game(slot: TgcSaveSlot) -> Error:        # write your state for slot.id
+	...
+func load_game(slot: TgcSaveSlot) -> Error:        # restore it over a fresh game
+	...
+func delete_save(slot: TgcSaveSlot) -> Error:
+	...
+func describe(slot: TgcSaveSlot) -> TgcSaveInfo:  # null when the slot is empty
+	return TgcSaveInfo.new(saved_at_unix_time, "Chapter 3 — Harbour")
+func can_save() -> bool:                           # optional: false in a cut-scene
+	return true
+```
+
+```gdscript
+_session.saves = MySaves.new(...)
+```
+
+- `slot.id` is `save_1`, `save_2`… or `quick_1`, `quick_2`…: key your storage with it.
+- **Loading starts a game**: the session emits `game_stopped` (if one is running), then
+  `game_started`, then calls `load_game()`. Restore your state over the fresh game.
+- What `describe()` returns is shown as is; anything but a `TgcSaveInfo` counts as empty.
+  Keep it cheap: it is called each time a page lists the slots.
+- **Save** lists the regular slots; an empty one saves at once, a full one asks before
+  overwriting. **Load** lists every save, regular and quick, the most recent first, and asks
+  before abandoning a game whose progress is at risk. **Delete** always asks.
+- **The quick save** (F5) writes the first empty quick slot, else the oldest; **the quick load**
+  (F9) loads the most recent quick save, without asking — that is what it is for. Both work
+  during a game, menu open or not, and say what happened on screen.
+- An autosave is `session.save_to(slot)`, from your own code.
+
+The demo's `demo/demo_saves.gd` is a complete provider: one small file per slot, read back
+without trusting it.
 
 ## Your game's help reads the Input Map
 
@@ -137,7 +188,11 @@ to the add-on's CSV.
 | `controls_changed(bindings)` | A control was remapped: refresh your on-screen help. |
 | `play()`, `resume()`, `pause()`, `toggle_pause()`, `to_main_menu()`, `quit()` | What the buttons do, for your own code and your tests. |
 | `is_paused()`, `is_in_game()`, `menu()` | |
-| `progress_at_risk` | True when a game starts. Set it to false when the game has just saved, back to true when there is something new to lose: the confirmations only appear while it is true. |
+| `progress_at_risk` | Whether the game has run since it was last saved or loaded. The session keeps it: false after a save or a load, true again as soon as the game runs. The confirmations only appear while it is true. |
+| `saves` | Your `TgcSaveProvider`. |
+| `save_to(slot)`, `load_from(slot)`, `delete_save(slot)`, `quick_save()`, `quick_load()` | What the pages and the shortcuts call; an autosave calls `save_to`. |
+| `save_slots()`, `quick_slots()`, `existing_saves()`, `describe(slot)`, `can_save()` | |
+| `saved(slot)`, `loaded(slot)`, `save_deleted(slot)` | Signals. |
 | `general`, `display`, `audio`, `bindings` | The settings: observable objects (`changed`) that the session applies and saves. |
 
 For automated tests that must not touch the player's files, give the session a copy of the

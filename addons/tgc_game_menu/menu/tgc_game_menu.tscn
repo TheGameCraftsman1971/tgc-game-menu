@@ -60,6 +60,16 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "TGC_PLAY"
 
+[node name="OpenSave" type="Button" parent="Frame/Root/Panel/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_SAVE"
+
+[node name="OpenLoad" type="Button" parent="Frame/Root/Panel/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_LOAD"
+
 [node name="OpenSettings" type="Button" parent="Frame/Root/Panel/Column"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -163,7 +173,7 @@ theme_type_variation = &"TitleLabel"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="Loss" type="Label" parent="Frame/Confirm/Centre/Panel/Column"]
+[node name="Detail" type="Label" parent="Frame/Confirm/Centre/Panel/Column"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "TGC_CONFIRM_LOSS"

@@ -96,6 +96,24 @@ const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 ## move through the menu without ever confirming anything.
 @export var gamepad_ui_buttons := true
 
+@export_group("Saves")
+## Saving and loading, from the menu and from shortcuts. The game also has to hand the session
+## its [TgcSaveProvider] (`session.saves`): the add-on never knows how a game is saved.
+@export var enable_saves := false
+## The slots of the Save page. 0: no Save page, quick saves only.
+@export_range(0, 99) var save_slots := 5
+## The slots the quick save writes in turn (the empty one first, then the oldest). 0: no quick
+## save and no quick load.
+@export_range(0, 10) var quick_save_slots := 1
+## Each save of the Save and Load pages gets a "Delete" button, which asks first.
+@export var allow_delete_saves := false
+## The shortcuts, remappable on the Controls page like any action. If the project does not
+## declare them, the session creates them: F5 and F9.
+@export var quick_save_action: StringName = &"quick_save"
+@export var quick_load_action: StringName = &"quick_load"
+## A short message on screen after a quick save or a quick load, and when one cannot be done.
+@export var show_save_notifications := true
+
 @export_group("Files")
 @export var general_file := "user://settings_general.cfg"
 @export var display_file := "user://settings_display.cfg"
@@ -146,12 +164,29 @@ func volume_channels() -> Array[TgcAudioChannel]:
 	return master
 
 
-## The rows of the Controls page: those declared, or the pause action alone.
+## The rows of the Controls page: those declared, or the pause action alone; then, with the
+## quick saves on, their two shortcuts if the list does not have them already.
 func remappable() -> Array[TgcRemappableAction]:
-	if not remappable_actions.is_empty():
-		return remappable_actions
-	var pause: Array[TgcRemappableAction] = [TgcRemappableAction.make(pause_action, "TGC_ACTION_PAUSE", true)]
-	return pause
+	var rows: Array[TgcRemappableAction] = []
+	if remappable_actions.is_empty():
+		rows.append(TgcRemappableAction.make(pause_action, "TGC_ACTION_PAUSE", true))
+	else:
+		rows.append_array(remappable_actions)
+	if quick_saves_enabled():
+		var listed: Array[StringName] = []
+		for row in rows:
+			if row != null:
+				listed.append(row.action)
+		if not listed.has(quick_save_action):
+			rows.append(TgcRemappableAction.make(quick_save_action, "TGC_ACTION_QUICK_SAVE"))
+		if not listed.has(quick_load_action):
+			rows.append(TgcRemappableAction.make(quick_load_action, "TGC_ACTION_QUICK_LOAD"))
+	return rows
+
+
+## True if the quick save and the quick load exist (their shortcuts with them).
+func quick_saves_enabled() -> bool:
+	return enable_saves and quick_save_slots > 0
 
 
 static func _prefixed(path: String, prefix: String) -> String:

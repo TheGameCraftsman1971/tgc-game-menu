@@ -14,6 +14,7 @@ extends Node
 const DEMO_SCENE := preload("res://demo/demo.tscn")
 const DEMO_CONFIG := preload("res://demo/demo_menu_config.tres")
 const PREFIX := "capture_"
+const SAVE_DIRECTORY := "user://capture_saves"
 
 var _directory := ""
 
@@ -33,6 +34,7 @@ func _ready() -> void:
 	config.languages = PackedStringArray(TgcI18n.LOCALES)
 	var demo: Demo = DEMO_SCENE.instantiate()
 	(demo.get_node("MenuSession") as TgcMenuSession).config = config
+	demo.save_directory = SAVE_DIRECTORY
 	add_child(demo)
 	var session := demo.session()
 	var menu := session.menu()
@@ -54,11 +56,23 @@ func _ready() -> void:
 			await _shot("%s_%02d_%s" % [locale, index, page])
 			index += 1
 		session.play()
+		demo.world().place_player(Vector2(640, 380))
+		session.quick_save()
 		await _wait(0.4)
 		await _shot("%s_%02d_game" % [locale, index])
 		session.pause()
 		await _wait(0.3)
 		await _shot("%s_%02d_pause" % [locale, index + 1])
+		session.save_to(session.save_slots()[0])
+		demo.world().place_player(Vector2(1200, 700))
+		session.save_to(session.save_slots()[2])
+		menu.show_page(&"save")
+		await _wait(0.2)
+		await _shot("%s_%02d_save" % [locale, index + 1])
+		menu.show_page(&"load")
+		await _wait(0.2)
+		await _shot("%s_%02d_load" % [locale, index + 1])
+		menu.show_page(TgcGameMenu.ROOT)
 		(menu.get_node("%MainMenu") as Button).pressed.emit()
 		await _wait(0.2)
 		await _shot("%s_%02d_confirm" % [locale, index + 2])
@@ -69,6 +83,8 @@ func _ready() -> void:
 	for path in config.player_files():
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	for name in DirAccess.get_files_at(SAVE_DIRECTORY):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_DIRECTORY.path_join(name)))
 	await _wait(0.2)
 	get_tree().quit()
 

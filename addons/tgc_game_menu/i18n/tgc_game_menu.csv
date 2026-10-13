@@ -51,6 +51,30 @@ TGC_CONTROLS_LAST_KEY,“%s” is the last key of “%s”: it stays where it is
 TGC_CONTROLS_TAKEN,“%s” was taken from “%s”.,« %s » a été repris à « %s ».,„%s“ wurde „%s“ entzogen.,«%s» se le ha quitado a «%s».
 TGC_CONTROLS_KEEPS_ONE,“%s” keeps at least one keyboard key.,« %s » garde au moins une touche au clavier.,„%s“ behält mindestens eine Taste auf der Tastatur.,«%s» conserva al menos una tecla del teclado.
 TGC_ACTION_PAUSE,Pause,Pause,Pause,Pausa
+TGC_SAVE,Save,Sauvegarder,Speichern,Guardar
+TGC_LOAD,Load,Charger,Laden,Cargar
+TGC_DELETE,Delete,Supprimer,Löschen,Borrar
+TGC_SLOT_N,Slot %d,Emplacement %d,Speicherplatz %d,Ranura %d
+TGC_QUICK_SLOT,Quick save,Sauvegarde rapide,Schnellspeicherung,Guardado rápido
+TGC_QUICK_SLOT_N,Quick save %d,Sauvegarde rapide %d,Schnellspeicherung %d,Guardado rápido %d
+TGC_SLOT_EMPTY,Empty,Vide,Leer,Vacía
+TGC_NO_SAVES,No save yet.,Aucune sauvegarde.,Noch kein Spielstand.,Aún no hay partidas guardadas.
+TGC_CONFIRM_OVERWRITE,Overwrite this save?,Écraser cette sauvegarde ?,Diesen Spielstand überschreiben?,¿Sobrescribir esta partida guardada?
+TGC_CONFIRM_OVERWRITE_DETAIL,It will be replaced by the game in progress.,Elle sera remplacée par la partie en cours.,Er wird durch das laufende Spiel ersetzt.,Se reemplazará por la partida en curso.
+TGC_CONFIRM_LOAD,Load this save?,Charger cette sauvegarde ?,Diesen Spielstand laden?,¿Cargar esta partida guardada?
+TGC_CONFIRM_DELETE,Delete this save?,Supprimer cette sauvegarde ?,Diesen Spielstand löschen?,¿Borrar esta partida guardada?
+TGC_CONFIRM_DELETE_DETAIL,It cannot be recovered.,Elle ne pourra pas être récupérée.,Er kann nicht wiederhergestellt werden.,No se podrá recuperar.
+TGC_SAVED,Game saved.,Partie sauvegardée.,Spiel gespeichert.,Partida guardada.
+TGC_SAVE_FAILED,The game could not be saved.,La partie n'a pas pu être sauvegardée.,Das Spiel konnte nicht gespeichert werden.,No se pudo guardar la partida.
+TGC_LOAD_FAILED,The save could not be loaded.,La sauvegarde n'a pas pu être chargée.,Der Spielstand konnte nicht geladen werden.,No se pudo cargar la partida.
+TGC_DELETED,Save deleted.,Sauvegarde supprimée.,Spielstand gelöscht.,Partida borrada.
+TGC_DELETE_FAILED,The save could not be deleted.,La sauvegarde n'a pas pu être supprimée.,Der Spielstand konnte nicht gelöscht werden.,No se pudo borrar la partida.
+TGC_CANNOT_SAVE,The game cannot be saved right now.,Impossible de sauvegarder pour le moment.,Speichern ist gerade nicht möglich.,No se puede guardar en este momento.
+TGC_NO_QUICK_SAVE,No quick save yet.,Aucune sauvegarde rapide.,Noch keine Schnellspeicherung.,Aún no hay guardado rápido.
+TGC_QUICK_SAVED,Quick save done.,Sauvegarde rapide effectuée.,Schnell gespeichert.,Guardado rápido hecho.
+TGC_QUICK_LOADED,Quick save loaded.,Sauvegarde rapide chargée.,Schnellspeicherung geladen.,Guardado rápido cargado.
+TGC_ACTION_QUICK_SAVE,Quick save,Sauvegarde rapide,Schnellspeichern,Guardado rápido
+TGC_ACTION_QUICK_LOAD,Quick load,Chargement rapide,Schnellladen,Carga rápida
 TGC_INPUT_PAD_A,A / Cross,A / Croix,A / Kreuz,A / Cruz
 TGC_INPUT_PAD_B,B / Circle,B / Rond,B / Kreis,B / Círculo
 TGC_INPUT_PAD_X,X / Square,X / Carré,X / Quadrat,X / Cuadrado

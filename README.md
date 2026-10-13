@@ -10,6 +10,7 @@ French, German and Spanish.
 | ![Main menu](screenshots/en_01_main_menu.png) | ![Settings](screenshots/en_02_settings.png) |
 | ![Controls](screenshots/en_06_controls.png) | ![Display](screenshots/en_04_display.png) |
 | ![Pause](screenshots/en_09_pause.png) | ![Confirmation](screenshots/en_10_confirm.png) |
+| ![Load](screenshots/en_09_load.png) | ![Sauvegarder](screenshots/fr_09_save.png) |
 
 ## What it does
 
@@ -20,6 +21,9 @@ French, German and Spanish.
 - **Remapping that respects players**: keyboard-and-mouse and gamepad columns that never
   touch each other, a key given to an action taken from the one that had it, a pause that
   always keeps a key, keys named as engraved on the player's keyboard (AZERTY, QWERTZ…).
+- **Saving and loading, if you want them**: save slots, quick saves on remappable shortcuts
+  (F5, F9), a Load page listing your saves with their date and your own summary, optional
+  deletion. Your code does the saving through one small class; the menu only calls it.
 - **No game lost by mistake**: *New game*, *Main menu* and *Quit* ask first during a game,
   with the focus on *Cancel*.
 - **Your game's languages only**: the menu offers the languages your game is translated

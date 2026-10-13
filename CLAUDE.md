@@ -75,6 +75,12 @@ What it has already decided here, and which must not be quietly undone:
   The focus starts on "Cancel" and is trapped; the root is hidden meanwhile, because a
   theme's panels may be translucent. The modal is the menu's own, not a `ConfirmationDialog`:
   a separate window would not follow the menu's theme, scale nor focus rules.
+- **The game does the saving; the add-on only says when and where.** `TgcSaveProvider` is the
+  whole contract (save, load, delete, describe, can_save), handed over in code. The add-on
+  numbers the slots (`TgcSaveSlot.id`) and stores nothing in them. Loading **starts a game**
+  (`game_started`) and then restores over it, so a game loads exactly as it starts. The quick
+  load does not ask: that is what it is for. `progress_at_risk` is the session's, kept from
+  `_process`: a frame played since the last save is a frame "Main menu" would lose.
 - **§11 — YAGNI.** Four built-in pages and an extension point (`TgcMenuPage`,
   `extra_pages`). A game-specific setting is the game's: its own Resource, its own page, its
   own file.
@@ -139,7 +145,7 @@ chosen among `captures/`.
 
 ## Where this stands
 
-Version **1.0.0**, the first: extracted, checked (bench: 159 checks), installed back into the
+Version **1.1.0** (saves) after **1.0.0**, the first: extracted, checked (bench: 192 checks), installed back into the
 template (its own bench: 52 checks). The GitHub repository is private like the other add-ons.
 Not yet submitted to the Asset Store: making the repository public and filling in the store
 page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage

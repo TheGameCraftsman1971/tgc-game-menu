@@ -19,6 +19,8 @@ const ADDON_CATALOG := "res://addons/tgc_game_menu/i18n/tgc_game_menu.csv"
 const DEMO_CATALOG := "res://demo/i18n/demo.csv"
 ## Every file the bench writes is renamed with this: never the player's own settings.
 const PREFIX := "bench_"
+## Where the demonstration saves during the bench: never where the player's saves are.
+const SAVE_DIRECTORY := "user://bench_saves"
 
 var _passed := 0
 var _failed := 0
@@ -38,6 +40,7 @@ func _ready() -> void:
 	_check_languages()
 	await _check_demo()
 	await _check_confirmations()
+	await _check_saves()
 	await _check_default_config()
 	await _check_no_main_menu()
 	_remove_bench_files()
@@ -71,6 +74,9 @@ func _remove_bench_files() -> void:
 	for path in _bench_config().player_files():
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	if DirAccess.dir_exists_absolute(SAVE_DIRECTORY):
+		for name in DirAccess.get_files_at(SAVE_DIRECTORY):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_DIRECTORY.path_join(name)))
 
 
 static func _fingerprint(paths: PackedStringArray) -> Dictionary:
@@ -376,6 +382,7 @@ func _mount(config: TgcMenuConfig) -> Demo:
 	var demo: Demo = DEMO_SCENE.instantiate()
 	# Before entering the tree: `_ready()` reads the settings.
 	(demo.get_node("MenuSession") as TgcMenuSession).config = config
+	demo.save_directory = SAVE_DIRECTORY
 	add_child(demo)
 	return demo
 
@@ -544,7 +551,7 @@ func _check_confirmations() -> void:
 	session.game_started.connect(func() -> void: started[0] += 1)
 
 	_expect(not session.needs_confirmation(), "on the main menu, there is nothing to lose")
-	var loss: Label = menu.get_node("%Loss")
+	var loss: Label = menu.get_node("%Detail")
 	quit.pressed.emit()
 	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_QUIT" and accept.text == "TGC_QUIT",
 			"yet \"Quit\" asks, even without a game")
@@ -609,6 +616,130 @@ func _check_confirmations() -> void:
 	main_menu.pressed.emit()
 	_expect(not session.is_in_game() and not menu.is_confirming(), "and with confirmations off, nothing is asked")
 	await _unmount(demo)
+
+
+## Saving and loading through the demonstration's provider: the menu, the pages, the
+## shortcuts, the confirmations, the quick slots in turn, a damaged save.
+func _check_saves() -> void:
+	_section("Saves")
+	var demo := _mount(_bench_config())
+	await get_tree().process_frame
+	var session := demo.session()
+	var menu := session.menu()
+	var world := demo.world()
+	var open_save: Button = menu.get_node("%OpenSave")
+	var open_load: Button = menu.get_node("%OpenLoad")
+	var accept: Button = menu.get_node("%ConfirmAction")
+	var question: Label = menu.get_node("%Question")
+	var events := [0, 0, 0]
+	session.saved.connect(func(_slot: TgcSaveSlot) -> void: events[0] += 1)
+	session.loaded.connect(func(_slot: TgcSaveSlot) -> void: events[1] += 1)
+	session.save_deleted.connect(func(_slot: TgcSaveSlot) -> void: events[2] += 1)
+
+	_expect(session.saves_enabled() and session.save_slots().size() == 5 and session.quick_slots().size() == 2,
+			"the config's slots: five, and two quick ones")
+	_expect(not open_save.visible and open_load.visible and open_load.disabled,
+			"on the main menu, no \"Save\", and \"Load\" waits for a save")
+	var actions := session.bindings.actions()
+	var shortcuts: Array[StringName] = [&"quick_save", &"quick_load"]
+	_expect(actions.slice(-2) == shortcuts,
+			"the quick save's shortcuts join the Controls page", str(actions))
+	_expect(session.bindings.events(&"quick_save", TgcControlBindings.Family.KEYBOARD)[0].physical_keycode == KEY_F5
+			and session.bindings.defaults_of(&"quick_load") == PackedStringArray(["t:%d" % KEY_F9]),
+			"F5 and F9 by default, the project not declaring them")
+	_expect(session.quick_save() == ERR_UNAVAILABLE, "without a game, there is nothing to save")
+	_expect(session.quick_load() == ERR_DOES_NOT_EXIST and session.toast().message() == tr("TGC_NO_QUICK_SAVE"),
+			"and nothing to quick load, which the screen says")
+
+	session.play()
+	world.place_player(Vector2(100, 200))
+	session.pause()
+	_expect(open_save.visible and not open_save.disabled, "during a game, \"Save\" is there")
+	open_save.pressed.emit()
+	var save_page := menu.page(&"save") as TgcSavesPage
+	_expect(menu.current_page() == &"save" and save_page.rows().size() == 5, "the Save page lists the five slots")
+	_expect(save_page.rows()[0].text.ends_with(tr("TGC_SLOT_EMPTY")), "empty ones say so", save_page.rows()[0].text)
+	save_page.rows()[0].pressed.emit()
+	_expect(not menu.is_confirming() and events[0] == 1 and FileAccess.file_exists(SAVE_DIRECTORY.path_join("save_1.cfg")),
+			"an empty slot saves at once, through the game's provider")
+	_expect(save_page.hint_text() == tr("TGC_SAVED") and save_page.rows()[0].text.contains("100, 200"),
+			"the page says so, and shows the game's summary", save_page.rows()[0].text)
+	_expect(not session.progress_at_risk, "nothing is at risk right after a save")
+	_expect(save_page.delete_button(0) != null and save_page.delete_button(1) == null,
+			"a save can be deleted, an empty slot cannot")
+	save_page.rows()[0].pressed.emit()
+	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_OVERWRITE", "a full slot asks before overwriting")
+	accept.pressed.emit()
+	_expect(events[0] == 2 and menu.get_viewport().gui_get_focus_owner() == save_page.rows()[0],
+			"and saves, the focus back on its row")
+	world.place_player(Vector2(300, 400))
+	session.save_to(session.save_slots()[1])
+	menu.back()
+	_expect(menu.current_page() == TgcGameMenu.ROOT and not open_load.disabled, "back at the root, \"Load\" is on")
+	_expect(menu.get_viewport().gui_get_focus_owner() == open_save, "with the focus on \"Save\", where one came from")
+
+	world.place_player(Vector2(500, 600))
+	_expect(session.quick_save() == OK and FileAccess.file_exists(SAVE_DIRECTORY.path_join("quick_1.cfg")),
+			"the quick save takes the first empty quick slot")
+	_expect(session.toast().message() == tr("TGC_QUICK_SAVED"), "and says it on screen")
+	session._unhandled_input(_key(KEY_F5))
+	_expect(FileAccess.file_exists(SAVE_DIRECTORY.path_join("quick_2.cfg")), "F5 quick saves, into the next one")
+
+	open_load.pressed.emit()
+	var load_page := menu.page(&"load") as TgcSavesPage
+	_expect(load_page.rows().size() == 4, "the Load page lists the four saves, regular and quick")
+	var file := ConfigFile.new()
+	file.set_value("save", "saved_at", 5)
+	file.set_value("save", "x", "left")
+	file.set_value("save", "y", 3)
+	file.save(SAVE_DIRECTORY.path_join("save_3.cfg"))
+	load_page.focus_first()
+	_expect(load_page.rows().size() == 4, "a damaged save is not offered")
+	_expect(session.load_from(session.save_slots()[2]) == ERR_DOES_NOT_EXIST and session.is_in_game(),
+			"nor loaded: the game in progress stays")
+
+	session.progress_at_risk = true
+	var second := -1
+	for index in load_page.rows().size():
+		if load_page.rows()[index].text.begins_with((tr("TGC_SLOT_N") % 2) + "\n"):
+			second = index
+	load_page.rows()[second].pressed.emit()
+	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_LOAD", "loading over a game at risk asks first")
+	accept.pressed.emit()
+	_expect(not get_tree().paused and not menu.is_open() and events[1] == 1, "then loads, and the game resumes")
+	_expect(world.player_position() == Vector2(300, 400), "where the save had it")
+
+	world.place_player(Vector2(10, 10))
+	session._unhandled_input(_key(KEY_F9))
+	_expect(world.player_position() == Vector2(500, 600) and events[1] == 2, "F9 loads the latest quick save, without asking")
+
+	world.jump()
+	_expect(session.quick_save() == ERR_BUSY and session.toast().message() == tr("TGC_CANNOT_SAVE"),
+			"when the game cannot be saved (mid-jump), the quick save says so")
+	session.pause()
+	_expect(open_save.visible and open_save.disabled, "and \"Save\" is disabled")
+	await get_tree().create_timer(0.4, true).timeout
+
+	open_load.pressed.emit()
+	var before := load_page.rows().size()
+	load_page.delete_button(0).pressed.emit()
+	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_DELETE", "deleting always asks")
+	accept.pressed.emit()
+	_expect(load_page.rows().size() == before - 1 and events[2] == 1 and load_page.hint_text() == tr("TGC_DELETED"),
+			"and deletes, through the provider")
+	session.config.allow_delete_saves = false
+	load_page.focus_first()
+	_expect(load_page.delete_button(0) == null, "without allow_delete_saves, no \"Delete\"")
+	session.config.allow_delete_saves = true
+
+	menu.back()
+	var provider := session.saves
+	session.saves = null
+	menu.show_page(TgcGameMenu.ROOT)
+	_expect(not open_save.visible and not open_load.visible, "without a provider, no Save nor Load")
+	session.saves = provider
+	await _unmount(demo)
+	_remove_bench_files()
 
 
 ## With no config at all, the session takes the add-on's default one: a working menu.

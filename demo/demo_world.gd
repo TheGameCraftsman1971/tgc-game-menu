@@ -6,7 +6,7 @@ extends Node2D
 ## of naming the keys.
 ##
 ## What a game owes the session is small: `start()`, `stop()`, and nothing that starts a
-## game by itself. It never asks whether it is paused: it is pausable (`process_mode`, in the
+## game by itself. Its saving is [DemoSaves]. It never asks whether it is paused: it is pausable (`process_mode`, in the
 ## scene), and the tree stops calling it.
 
 const SPEED := 520.0
@@ -51,6 +51,15 @@ func is_running() -> bool:
 
 func player_position() -> Vector2:
 	return _player.position
+
+
+## Puts the square where a save had it, within the screen. What loading does.
+func place_player(where: Vector2) -> void:
+	_player.position = where.clamp(Vector2.ZERO, get_viewport_rect().size - _player.size)
+
+
+func is_jumping() -> bool:
+	return _jump != null and _jump.is_running()
 
 
 ## The jump. A function rather than a block of `_unhandled_input`: a bench plays it
