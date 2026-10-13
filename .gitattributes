@@ -1,17 +1,8 @@
 # Normalize EOL for all files that Git considers text files.
 * text=auto eol=lf
 
-# The Asset Library downloads the repository's archive: only the add-on goes in it.
-/.editorconfig export-ignore
-/.gitattributes export-ignore
-/.gitignore export-ignore
-/CHANGELOG.md export-ignore
-/CLAUDE.md export-ignore
-/README.md export-ignore
-/captures export-ignore
-/demo export-ignore
-/icon.svg export-ignore
-/icon.svg.import export-ignore
-/project.godot export-ignore
-/screenshots export-ignore
-/tools export-ignore
+# The store downloads the repository's archive: only the add-on goes in it. Everything
+# else (demo, bench, screenshots, this project) stays out, new files included.
+/** export-ignore
+/addons !export-ignore
+/addons/** !export-ignore

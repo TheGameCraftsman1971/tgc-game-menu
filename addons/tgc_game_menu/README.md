@@ -32,7 +32,7 @@ Requires **Godot 4.7** (developed and tested on 4.7.2).
 
 ## Install
 
-1. Copy `addons/tgc_game_menu/` into your project (or install it from the Asset Library).
+1. Copy `addons/tgc_game_menu/` into your project (or install it from the Asset Store).
 2. *Project > Project Settings > Plugins*: enable **TGC Game Menu**. This registers the
    add-on's translations, and declares a `game_pause` action (Esc, Start) if you have none.
 3. Add a **TgcMenuSession** node to your main scene.
