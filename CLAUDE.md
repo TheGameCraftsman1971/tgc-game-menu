@@ -7,7 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 A Godot 4.7 project that serves as the development bench and demo for **one deliverable
 add-on**: `addons/tgc_game_menu/`. That folder is the product. Everything outside it
 (`demo/`, `tools/`, `screenshots/`, `project.godot`, `icon.svg`) exists only to develop,
-check and show it, and is **not** shipped (`.gitattributes`: everything but `addons/` is `export-ignore`).
+check and show it, and is **not** shipped (`.gitattributes`: everything but `addons/` is
+`export-ignore`).
 
 The add-on is a main menu and a pause menu with the player's settings — language, display,
 volumes per bus, keyboard/mouse/gamepad controls remapped on screen — configured from one
@@ -132,5 +133,6 @@ chosen among `captures/`.
 Version **1.0.0**, the first: extracted, checked (bench: 128 checks), installed back into the
 template (its own bench: 48 checks). The GitHub repository is private like the other add-ons.
 Not yet submitted to the Asset Store: making the repository public and filling in the store
-page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage disclosure) is the author's call. The French translation of the user
-documentation is to be done at that point.
+page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage
+disclosure) is the author's call. The French translation of the user documentation is to be
+done at that point.
