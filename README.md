@@ -1,5 +1,7 @@
 # TGC Game Menu
 
+*[Français](README.fr.md)*
+
 **A main menu and a pause menu for Godot 4, configured from one resource**: language,
 display, volumes per bus, and keyboard, mouse and gamepad controls remapped on screen.
 Settings are saved at each change and read back without trusting the file. English,
@@ -11,6 +13,8 @@ French, German and Spanish.
 | ![Controls](screenshots/en_06_controls.png) | ![Display](screenshots/en_04_display.png) |
 | ![Pause](screenshots/en_09_pause.png) | ![Confirmation](screenshots/en_10_confirm.png) |
 | ![Load](screenshots/en_09_load.png) | ![Sauvegarder](screenshots/fr_09_save.png) |
+
+![The preview in the editor](screenshots/en_11_editor_preview.png)
 
 ## What it does
 

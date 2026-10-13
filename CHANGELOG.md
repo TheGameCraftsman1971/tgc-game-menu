@@ -9,6 +9,7 @@
   own translation domain. The page and the language are picked from lists (the config's
   pages, the languages the add-on or the game speaks); the page shows only for the screen
   that needs it. A redraw never takes the focus from the editor's field being typed in.
+- The documentation in French: `README.fr.md`, beside each `README.md`.
 - Every script of the add-on is a tool script, and does nothing in the editor unless a preview
   drives it. A game's page is drawn live if its script is a tool, as its scene draws it
   otherwise.

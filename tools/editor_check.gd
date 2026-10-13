@@ -11,7 +11,8 @@ extends Node
 ## inert (no menu, no action, no language, no file), that the menu's scene does not hide
 ## itself, that the preview offers its page and language as lists, that a redraw takes the
 ## focus from no field of the editor, and that every screen is drawn in every language
-## without a script error; then it photographs the preview into `captures/editor_*.png`.
+## without a script error; then it photographs the preview, and the whole editor for the
+## store page, into `captures/editor_*.png`.
 ##
 ## ⚠ Do not run it right after a headless import: the first window the editor opens then
 ## draws its viewports black, and so do the photographs. The checks still hold.
@@ -84,9 +85,33 @@ func _ready() -> void:
 		preview.screen = shot[0]
 		preview.locale = shot[1]
 		await _frames(10)
-		await RenderingServer.frame_post_draw
+		if not await _drawn():
+			continue
 		var name := "editor_%s_%s" % [shot[1], String(TgcMenuPreview.Screen.keys()[shot[0]]).to_lower()]
 		viewport.get_texture().get_image().save_png("res://captures/%s.png" % name)
+
+	# The whole editor, for the store page: the preview on Display, its Inspector beside it.
+	# The bottom panel folded and the view framed on the preview through the editor's own
+	# nodes, which are not an API: should they change, the photograph only looks worse.
+	preview.screen = TgcMenuPreview.Screen.PAGE
+	preview.page = &"display"
+	preview.locale = "en"
+	EditorInterface.set_main_screen_editor("2D")
+	EditorInterface.edit_node(preview)
+	await _frames(30)
+	var base := EditorInterface.get_base_control()
+	for panel in _all_of(base, "EditorBottomPanel"):
+		(panel as TabContainer).current_tab = -1
+	await _frames(5)
+	var canvas_editor := _all_of(base, "CanvasItemEditor")[0]
+	for found in _all_of(canvas_editor, "MenuButton"):
+		var menu := (found as MenuButton).get_popup()
+		for index in menu.item_count:
+			if menu.get_item_text(index).begins_with("Frame Selection"):
+				menu.id_pressed.emit(menu.get_item_id(index))
+	await _frames(20)
+	if await _drawn():
+		get_tree().root.get_texture().get_image().save_png("res://captures/editor_window.png")
 
 	_expect(InputMap.get_actions().size() == actions and TranslationServer.get_locale() == locale,
 			"no action created, the editor's language unchanged")
@@ -105,6 +130,25 @@ func _expect(condition: bool, label: String, detail := "") -> void:
 		print("  FAIL %s%s" % [label, ("  — " + detail) if detail != "" else ""])
 
 
+## Waits for the editor to draw a frame, and forces one after a few seconds (a window the
+## system no longer draws, hidden or minimised); false if even that draws nothing: the
+## photograph is then skipped.
+func _drawn() -> bool:
+	var drawn := [false]
+	var mark := func() -> void: drawn[0] = true
+	RenderingServer.frame_post_draw.connect(mark, CONNECT_ONE_SHOT)
+	var start := Time.get_ticks_msec()
+	while not drawn[0] and Time.get_ticks_msec() - start < 5000:
+		await get_tree().process_frame
+	if not drawn[0]:
+		# The viewports render off screen: a drawing forced here still gives their pictures.
+		RenderingServer.force_draw()
+		if not drawn[0]:
+			RenderingServer.frame_post_draw.disconnect(mark)
+			print("  --   no frame drawn: photograph skipped")
+	return drawn[0]
+
+
 func _frames(count: int) -> void:
 	for i in count:
 		await get_tree().process_frame
@@ -121,6 +165,15 @@ func _property_editor(property: StringName) -> EditorProperty:
 func _editor_class(property: StringName) -> String:
 	var editor := _property_editor(property)
 	return editor.get_class() if editor != null else "none"
+
+
+func _all_of(root: Node, type: String) -> Array[Node]:
+	var found: Array[Node] = []
+	for child in root.get_children(true):
+		if child.is_class(type):
+			found.append(child)
+		found.append_array(_all_of(child, type))
+	return found
 
 
 func _first_of_type(root: Node, type: String) -> Node:

@@ -1,5 +1,7 @@
 # TGC Game Menu
 
+*[Français](README.fr.md)*
+
 A main menu and a pause menu for Godot 4, with the settings players expect, configured
 from a single resource.
 

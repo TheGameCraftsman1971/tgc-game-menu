@@ -32,7 +32,9 @@ catalogue (`addons/tgc_game_menu/i18n/tgc_game_menu.csv`, `keys,en,fr,de,es`), a
 **User documentation ships in two versions, English first.** While the add-on is being
 worked on, only the English version is written; the French translation is made at the very
 end of a release, so that the two never drift. Files: `README.md` (the store page) and
-`addons/tgc_game_menu/README.md` (the reference, shipped).
+`addons/tgc_game_menu/README.md` (the reference, shipped), translated into `README.fr.md`
+beside each; the French store page shows the `fr_*` screenshots. A release whose English
+documentation changed brings its French one up to date before it is tagged.
 
 Conversation with the author is in French. That is a separate matter from what gets written
 to disk.
@@ -123,7 +125,8 @@ The bench exits non-zero on failure, and also fails on a script error raised alo
 (`tools/bench_log.gd`): an error in the middle of a check interrupts it silently otherwise.
 macOS has no `timeout`: `perl -e 'alarm shift; exec @ARGV' 120 "$GODOT" …`. After changing
 the CSV, run the import before the bench. `screenshots/` holds the pictures of the store page,
-chosen among `captures/`.
+chosen among `captures/` and brought down to 1600 pixels wide (`sips --resampleWidth 1600`):
+on a high-density screen the window, and so the captures, are larger than `--resolution`.
 
 ## Verified pitfalls
 
@@ -140,6 +143,7 @@ chosen among `captures/`.
 | **A menu closed on a page** | the page stays marked visible, and shows through the next modal shown alone | `close()` puts the menu back to its root, every page hidden; the modal hides them all |
 | **A script that is not `@tool`, run in the editor** | "Attempt to call a method on a placeholder instance" | every add-on script is `@tool`; a game's page that is not is shown inert by the menu (`_inert_pages`) |
 | **A control taking the focus in a viewport takes it from the whole window** | typing in the Inspector, the field loses the focus at each letter: the preview redraws, and the menu's first button takes it | in a preview, the menu gives the focus to nothing (`_focus()`), and the preview gives back any focus a page took |
+| **An editor window the system does not draw** (hidden, behind another app) | `await RenderingServer.frame_post_draw` never returns, and the editor bench hangs | `_drawn()` waits five seconds at most, then forces a drawing (`RenderingServer.force_draw()`): the viewports render off screen |
 | **The editor's first window after a headless import** | the preview's viewport photographs black | run the editor bench again; the checks hold either way |
 | A page built before `setup()` | `_ready()` finds no session | the menu calls `setup(session)` **before** adding the page; the session does the same for the menu |
 | The tree's root is pausable, but a bench parent may not be | a game under a `PROCESS_MODE_ALWAYS` bench node never pauses | the demo's `World` declares `process_mode = PAUSABLE` itself |
@@ -161,9 +165,9 @@ chosen among `captures/`.
 ## Where this stands
 
 Version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
-merged into `main`, checked (bench: 220 checks, editor bench: 13), installed back into the
-template (its own bench: 52 checks). The GitHub repository is private like the other add-ons.
-Not yet submitted to the Asset Store: making the repository public and filling in the store
-page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage
-disclosure) is the author's call. The French translation of the user documentation is to be
-done at that point.
+merged into `main`, tagged `v1.2.0` with a GitHub release, checked (bench: 220 checks, editor
+bench: 13), installed back into the template (its own bench: 52 checks), documentation in
+English and French. The GitHub repository is private like the other add-ons. Not yet
+submitted to the Asset Store: making the repository public and filling in the store page
+(`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage
+disclosure) is the author's call.
