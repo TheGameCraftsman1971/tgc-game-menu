@@ -847,6 +847,17 @@ func _check_preview() -> void:
 	preview.screen = TgcMenuPreview.Screen.SETTINGS
 	await get_tree().process_frame
 	_expect(not preview.session().menu().page_ids().has(&"sound"), "and the preview follows the config")
+	_expect(not _hint_of(preview, &"page").split(",").has("sound"), "and so does its list of pages")
+
+	preview.config = DEMO_CONFIG
+	preview.screen = TgcMenuPreview.Screen.PAGE
+	await get_tree().process_frame
+	_expect(_hint_of(preview, &"page") == "general,display,sound,controls,gameplay",
+			"the Inspector lists the config's pages, the game's included", _hint_of(preview, &"page"))
+	_expect(_hint_of(preview, &"locale") == "de,en,es,fr", "and the languages to preview in",
+			_hint_of(preview, &"locale"))
+	preview.screen = TgcMenuPreview.Screen.MAIN_MENU
+	_expect(_hint_of(preview, &"page") == "", "the page shows only for the screen PAGE")
 
 	preview.queue_free()
 	await get_tree().process_frame
@@ -854,6 +865,14 @@ func _check_preview() -> void:
 			"the preview created no action and changed no input")
 	_expect(TranslationServer.get_locale() == locale_before and _fingerprint(DEMO_CONFIG.player_files()) == files,
 			"nor the language, nor a file of the player's")
+
+
+## The list an object offers in the Inspector for `property`; empty when it does not show it.
+func _hint_of(object: Object, property: StringName) -> String:
+	for found in object.get_property_list():
+		if found.name == property and found.usage & PROPERTY_USAGE_EDITOR and found.hint == PROPERTY_HINT_ENUM:
+			return found.hint_string
+	return ""
 
 
 ## With no config at all, the session takes the add-on's default one: a working menu.

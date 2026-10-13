@@ -9,8 +9,9 @@ extends Node
 ## It opens a window (the preview draws on the graphics card), checks, and quits with a
 ## non-zero code on failure. It checks that a session in a scene opened in the editor stays
 ## inert (no menu, no action, no language, no file), that the menu's scene does not hide
-## itself, and that the preview draws every screen in every language without a script error;
-## then it photographs the preview into `captures/editor_*.png`.
+## itself, that the preview offers its page and language as lists, that a redraw takes the
+## focus from no field of the editor, and that every screen is drawn in every language
+## without a script error; then it photographs the preview into `captures/editor_*.png`.
 ##
 ## ⚠ Do not run it right after a headless import: the first window the editor opens then
 ## draws its viewports black, and so do the photographs. The checks still hold.
@@ -44,6 +45,33 @@ func _ready() -> void:
 	await _frames(20)
 	var preview := EditorInterface.get_edited_scene_root() as TgcMenuPreview
 	var viewport := preview.get_child(0, true) as SubViewport
+	EditorInterface.inspect_object(preview)
+	preview.screen = TgcMenuPreview.Screen.PAGE
+	await _frames(10)
+	_expect(_editor_class(&"screen") == "EditorPropertyEnum"
+			and _editor_class(&"page") == "EditorPropertyTextEnum"
+			and _editor_class(&"locale") == "EditorPropertyTextEnum",
+			"the screen, the page and the language are picked from lists")
+	var pages := _first_of_type(_property_editor(&"page"), "OptionButton") as OptionButton
+	var listed := PackedStringArray()
+	for index in pages.item_count:
+		listed.append(pages.get_item_text(index))
+	_expect(listed.has("display") and listed.has("gameplay") and not listed.has("save"),
+			"the pages listed are the config's", ", ".join(listed))
+	preview.screen = TgcMenuPreview.Screen.MAIN_MENU
+	await _frames(10)
+	_expect(_property_editor(&"page") == null, "the page shows only for the screen PAGE")
+
+	# A control that takes the focus in a viewport takes it from the whole window: a field of
+	# the editor being typed in must keep it when the preview redraws.
+	var field := LineEdit.new()
+	EditorInterface.get_base_control().add_child(field)
+	field.grab_focus()
+	for shown: TgcMenuPreview.Screen in TgcMenuPreview.Screen.values():
+		preview.screen = shown
+		await _frames(4)
+	_expect(field.has_focus(), "a redraw leaves the focus where it is")
+	field.queue_free()
 	for code in LOCALES:
 		for shown: TgcMenuPreview.Screen in TgcMenuPreview.Screen.values():
 			preview.locale = code
@@ -80,6 +108,26 @@ func _expect(condition: bool, label: String, detail := "") -> void:
 func _frames(count: int) -> void:
 	for i in count:
 		await get_tree().process_frame
+
+
+## The Inspector's editor of a property of the object it shows, or null.
+func _property_editor(property: StringName) -> EditorProperty:
+	for found in EditorInterface.get_inspector().find_children("*", "EditorProperty", true, false):
+		if (found as EditorProperty).get_edited_property() == property:
+			return found
+	return null
+
+
+func _editor_class(property: StringName) -> String:
+	var editor := _property_editor(property)
+	return editor.get_class() if editor != null else "none"
+
+
+func _first_of_type(root: Node, type: String) -> Node:
+	if root == null:
+		return null
+	var found := root.find_children("*", type, true, false)
+	return found[0] if not found.is_empty() else null
 
 
 func _player_files() -> PackedStringArray:

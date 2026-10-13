@@ -139,6 +139,7 @@ chosen among `captures/`.
 | A property set **after** `add_child` | `_ready()` has already read the player's files | set `TgcMenuSession.config` before `add_child` |
 | **A menu closed on a page** | the page stays marked visible, and shows through the next modal shown alone | `close()` puts the menu back to its root, every page hidden; the modal hides them all |
 | **A script that is not `@tool`, run in the editor** | "Attempt to call a method on a placeholder instance" | every add-on script is `@tool`; a game's page that is not is shown inert by the menu (`_inert_pages`) |
+| **A control taking the focus in a viewport takes it from the whole window** | typing in the Inspector, the field loses the focus at each letter: the preview redraws, and the menu's first button takes it | in a preview, the menu gives the focus to nothing (`_focus()`), and the preview gives back any focus a page took |
 | **The editor's first window after a headless import** | the preview's viewport photographs black | run the editor bench again; the checks hold either way |
 | A page built before `setup()` | `_ready()` finds no session | the menu calls `setup(session)` **before** adding the page; the session does the same for the menu |
 | The tree's root is pausable, but a bench parent may not be | a game under a `PROCESS_MODE_ALWAYS` bench node never pauses | the demo's `World` declares `process_mode = PAUSABLE` itself |
@@ -159,7 +160,7 @@ chosen among `captures/`.
 
 ## Where this stands
 
-Version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: extracted, checked (bench: 216 checks, editor bench: 9), installed back into the
+Version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: extracted, checked (bench: 220 checks, editor bench: 13), installed back into the
 template (its own bench: 52 checks). The GitHub repository is private like the other add-ons.
 Not yet submitted to the Asset Store: making the repository public and filling in the store
 page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage

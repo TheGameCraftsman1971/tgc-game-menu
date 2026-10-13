@@ -6,7 +6,9 @@
   try, a screen (main menu, pause menu, Settings, a page, Save, Load, a confirmation, a
   notification), a language, made-up saves and a background. A theme edit shows at once; a
   config edit redraws it. It touches nothing: no file, no input action, no language but its
-  own translation domain.
+  own translation domain. The page and the language are picked from lists (the config's
+  pages, the languages the add-on or the game speaks); the page shows only for the screen
+  that needs it. A redraw never takes the focus from the editor's field being typed in.
 - Every script of the add-on is a tool script, and does nothing in the editor unless a preview
   drives it. A game's page is drawn live if its script is a tool, as its scene draws it
   otherwise.

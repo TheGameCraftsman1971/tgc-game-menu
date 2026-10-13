@@ -227,16 +227,16 @@ func show_page(target: StringName) -> void:
 		ROOT:
 			refresh_root()
 			if _root_pages.has(previous) and _page_openers[previous].visible:
-				_page_openers[previous].grab_focus()
+				_focus(_page_openers[previous])
 			elif previous == SETTINGS:
-				_open_settings.grab_focus()
+				_focus(_open_settings)
 			else:
-				(_resume if _resume.visible else _play).grab_focus()
+				_focus(_resume if _resume.visible else _play)
 		SETTINGS:
 			if _page_openers.has(previous):
-				_page_openers[previous].grab_focus()
+				_focus(_page_openers[previous])
 			elif _page_buttons.get_child_count() > 0:
-				(_page_buttons.get_child(0) as Button).grab_focus()
+				_focus(_page_buttons.get_child(0) as Button)
 		_:
 			if not _inert_pages.has(target):
 				_pages[target].focus_first()
@@ -262,7 +262,19 @@ func confirm(question: String, label: String, detail: String, on_accept: Callabl
 		_pages[id].visible = false
 	_settings.visible = false
 	_confirm_layer.visible = true
-	_cancel.grab_focus()
+	_focus(_cancel)
+
+
+## Gives `control` the focus — except in a preview: a control taking the focus in a viewport
+## takes it from the whole window, and the editor's field being typed in would lose it. (A
+## page still gives the focus to its first control: the preview gives it back.)
+func _focus(control: Control) -> void:
+	if not _previewed():
+		control.grab_focus()
+
+
+func _previewed() -> bool:
+	return _session != null and _session.is_preview()
 
 
 ## Does what a button asks, or first asks the player when it would lose the game in

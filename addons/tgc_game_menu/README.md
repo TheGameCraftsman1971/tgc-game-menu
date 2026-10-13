@@ -156,8 +156,9 @@ your own, and set in the Inspector:
 | --- | --- |
 | `config` | Your `TgcMenuConfig` (empty: the add-on's default). |
 | `theme_override` | A theme to try instead of the config's. |
-| `screen` | Main menu, pause menu, Settings, one page (`page`: `general`, `display`, `sound`, `controls`, or yours), Save, Load, a confirmation, a notification. |
-| `locale` | The preview's language: any your game or the add-on speaks. |
+| `screen` | Main menu, pause menu, Settings, one page, Save, Load, a confirmation, a notification. |
+| `page` | For the screen *Page*: picked from the config's pages (`general`, `display`, `sound`, `controls`, and yours). |
+| `locale` | The preview's language, picked from those your game or the add-on speaks. |
 | `filled_slots` | How many made-up saves the Save and Load pages show. |
 | `background_color`, `background` | What lies behind the menu: a colour, or a screenshot of your game. |
 
