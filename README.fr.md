@@ -64,6 +64,7 @@ C'est un projet Godot 4.7 qui développe et vérifie l'add-on. Seul
 | `tools/editor_check.gd` | Le banc de l'éditeur : `TGC_EDITOR_CHECK=1 godot --path . --editor` |
 | `demo/menu_preview.tscn` | L'aperçu, réglé sur la configuration de la démo. Ouvrez-le dans l'éditeur. |
 | `tools/capture.tscn` | Des captures de chaque page, par langue (ouvre une fenêtre). |
+| `tools/store_thumbnail.tscn` | La vignette de l'Asset Store (ouvre une fenêtre). `STORE.md` contient le formulaire de la boutique. |
 | `tools/install-into.sh` | Copie l'add-on dans un projet, ou l'y met à jour. |
 
 ## Licence

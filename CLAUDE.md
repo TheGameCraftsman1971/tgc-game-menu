@@ -119,6 +119,7 @@ GODOT="/Applications/Godot v4.7.2.app/Contents/MacOS/Godot"
 | **The bench** — codec, remapping, damaged files, window sizes, catalogues, languages, then the demo mounted and played | `"$GODOT" --headless --path . res://tools/checks.tscn` |
 | **The editor's bench** (opens the editor): sessions inert in opened scenes, the preview in every screen and language, captures `captures/editor_*.png` | `TGC_EDITOR_CHECK=1 "$GODOT" --path . --editor` |
 | **Screenshots** of every page (opens a window), in `captures/` | `"$GODOT" --path . res://tools/capture.tscn --resolution 1600x900 -- en fr de es` |
+| **The store's thumbnail** (16:9, opens a window), `captures/store_thumbnail.png` | `"$GODOT" --path . res://tools/store_thumbnail.tscn` |
 | **Copy the add-on into a project** (the template, a game) | `tools/install-into.sh <project folder>` |
 
 The bench exits non-zero on failure, and also fails on a script error raised along the way
@@ -167,7 +168,5 @@ on a high-density screen the window, and so the captures, are larger than `--res
 Version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
 merged into `main`, tagged `v1.2.0` with a GitHub release, checked (bench: 220 checks, editor
 bench: 13), installed back into the template (its own bench: 52 checks), documentation in
-English and French. The GitHub repository is private like the other add-ons. Not yet
-submitted to the Asset Store: making the repository public and filling in the store page
-(`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage
-disclosure) is the author's call.
+English and French. The repository is public; the store form, field by field, is in
+`STORE.md` (the author submits it).

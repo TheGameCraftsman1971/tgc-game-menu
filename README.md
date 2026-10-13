@@ -62,6 +62,7 @@ It is a Godot 4.7 project that develops and checks the add-on. Only
 | `tools/editor_check.gd` | The editor's bench: `TGC_EDITOR_CHECK=1 godot --path . --editor` |
 | `demo/menu_preview.tscn` | The preview, set on the demo's config. Open it in the editor. |
 | `tools/capture.tscn` | Screenshots of every page, per language (opens a window). |
+| `tools/store_thumbnail.tscn` | The Asset Store's thumbnail (opens a window). `STORE.md` holds the store form. |
 | `tools/install-into.sh` | Copies the add-on into a project, or updates it there. |
 
 ## License
