@@ -23,9 +23,21 @@ extends CanvasLayer
 ## up means resuming the game. Going up gives the focus back to the button one came from, so
 ## that a gamepad never loses its place.
 ##
+## ## Confirmations
+##
+## "New game", "Main menu" and "Quit" abandon the game in progress. When there is one, and
+## [method TgcMenuSession.needs_confirmation] says its progress is at risk, they first open a
+## **modal** in place of the root — hidden meanwhile, since a theme's panels may let it show
+## through —: the question, what will be lost, "Cancel" and the action itself.
+## The focus starts on "Cancel" — a press too many on a gamepad must not cost a game — and
+## cannot leave the modal; the pointer cannot reach what lies under it. "Cancel", Esc, B or
+## the pause gesture close it ([method back]) and give the focus back to the button that
+## opened it. Without a game, the three buttons act at once: there is nothing to lose.
+##
 ## A game that wants another look duplicates `tgc_game_menu.tscn`, keeps its unique names
 ## (`%Title`, `%Resume`, `%Play`, `%OpenSettings`, `%MainMenu`, `%Quit`, `%Settings`,
-## `%PageButtons`, `%SettingsBack`, `%Pages`…) and names the copy in
+## `%PageButtons`, `%SettingsBack`, `%Pages`, `%Confirm`, `%Question`, `%Cancel`,
+## `%ConfirmAction`…) and names the copy in
 ## [member TgcMenuConfig.menu_scene].
 
 signal resume_requested
@@ -49,12 +61,19 @@ const SETTINGS := &"settings"
 @onready var _main_menu: Button = %MainMenu
 @onready var _quit: Button = %Quit
 @onready var _pages_holder: Control = %Pages
+@onready var _confirm_layer: Control = %Confirm
+@onready var _question: Label = %Question
+@onready var _cancel: Button = %Cancel
+@onready var _confirm_action: Button = %ConfirmAction
 
 var _session: TgcMenuSession
 var _home_title := ""
 var _pages: Dictionary[StringName, TgcMenuPage] = {}
 var _page_openers: Dictionary[StringName, Button] = {}
 var _page := ROOT
+## What the open confirmation will do, and the button that asked for it.
+var _pending := Signal()
+var _asker: Button
 
 
 ## Called by the session **before** the menu enters the tree.
@@ -65,9 +84,12 @@ func setup(session: TgcMenuSession) -> void:
 func _ready() -> void:
 	visible = false
 	_resume.pressed.connect(resume_requested.emit)
-	_play.pressed.connect(play_requested.emit)
-	_main_menu.pressed.connect(main_menu_requested.emit)
-	_quit.pressed.connect(quit_requested.emit)
+	_play.pressed.connect(_ask.bind(play_requested, "TGC_CONFIRM_NEW_GAME", "TGC_NEW_GAME", _play))
+	_main_menu.pressed.connect(_ask.bind(main_menu_requested, "TGC_CONFIRM_MAIN_MENU", "TGC_MAIN_MENU", _main_menu))
+	_quit.pressed.connect(_ask.bind(quit_requested, "TGC_CONFIRM_QUIT", "TGC_QUIT", _quit))
+	_cancel.pressed.connect(_dismiss)
+	_confirm_action.pressed.connect(_accept)
+	_trap_focus()
 	_open_settings.pressed.connect(show_page.bind(SETTINGS))
 	(%SettingsBack as Button).pressed.connect(show_page.bind(ROOT))
 	if _session == null:
@@ -93,6 +115,7 @@ func open(in_game: bool) -> void:
 	_title.text = "TGC_PAUSE" if in_game else _home_title
 	_play.text = "TGC_NEW_GAME" if in_game else "TGC_PLAY"
 	visible = true
+	_hide_confirmation()
 	show_page(ROOT)
 
 
@@ -101,11 +124,17 @@ func close() -> void:
 		_pages[_page].leave()
 	# The menu always reopens at its root, with the focus on its first button.
 	_page = ROOT
+	_hide_confirmation()
 	visible = false
 
 
 func is_open() -> bool:
 	return visible
+
+
+## True while a confirmation waits for an answer.
+func is_confirming() -> bool:
+	return _confirm_layer.visible
 
 
 ## The page shown, or [constant ROOT], or [constant SETTINGS].
@@ -129,6 +158,9 @@ func page_ids() -> Array[StringName]:
 ## False at the root: there is nothing left to go up to, and it is up to the session to
 ## resume the game.
 func back() -> bool:
+	if is_confirming():
+		_dismiss()
+		return true
 	if _page == ROOT:
 		return false
 	show_page(SETTINGS if _pages.has(_page) else ROOT)
@@ -160,6 +192,58 @@ func show_page(target: StringName) -> void:
 				(_page_buttons.get_child(0) as Button).grab_focus()
 		_:
 			_pages[target].focus_first()
+
+
+## Does what a button asks, or first asks the player when it would lose the game in
+## progress.
+func _ask(action: Signal, question: String, label: String, asker: Button) -> void:
+	if _session == null or not _session.needs_confirmation():
+		action.emit()
+		return
+	_pending = action
+	_asker = asker
+	_question.text = question
+	_confirm_action.text = label
+	_root.visible = false
+	_confirm_layer.visible = true
+	_cancel.grab_focus()
+
+
+func _accept() -> void:
+	var action := _pending
+	_hide_confirmation()
+	action.emit()
+
+
+## Gives up, and gives the focus back to the button that asked.
+func _dismiss() -> void:
+	var asker := _asker
+	_hide_confirmation()
+	if asker != null and asker.is_visible_in_tree():
+		asker.grab_focus()
+
+
+func _hide_confirmation() -> void:
+	if _confirm_layer.visible:
+		_root.visible = _page == ROOT
+	_confirm_layer.visible = false
+	_pending = Signal()
+	_asker = null
+
+
+## The two buttons of the modal lead only to each other, whatever the direction: the
+## keyboard and the gamepad cannot wander to the menu underneath.
+func _trap_focus() -> void:
+	for pair: Array in [[_cancel, _confirm_action], [_confirm_action, _cancel]]:
+		var button: Button = pair[0]
+		var other := button.get_path_to(pair[1] as Button)
+		var itself := button.get_path_to(button)
+		button.focus_neighbor_left = other
+		button.focus_neighbor_right = other
+		button.focus_neighbor_top = itself
+		button.focus_neighbor_bottom = itself
+		button.focus_next = other
+		button.focus_previous = other
 
 
 func _add_page(scene: PackedScene) -> void:

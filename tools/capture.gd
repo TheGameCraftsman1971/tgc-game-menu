@@ -55,6 +55,9 @@ func _ready() -> void:
 		session.pause()
 		await _wait(0.3)
 		await _shot("%s_%02d_pause" % [locale, index + 1])
+		(menu.get_node("%MainMenu") as Button).pressed.emit()
+		await _wait(0.2)
+		await _shot("%s_%02d_confirm" % [locale, index + 2])
 		session.to_main_menu()
 
 	session.bindings.restore_defaults()

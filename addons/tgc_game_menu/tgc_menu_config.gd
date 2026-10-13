@@ -27,6 +27,10 @@ const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 @export var pause_on_focus_loss := true
 ## "Quit" is hidden in a web build, where it would close nothing.
 @export var hide_quit_on_web := true
+## "New game", "Main menu" and "Quit" ask for a confirmation when they would abandon a game
+## in progress ([member TgcMenuSession.progress_at_risk]). Off for a game that saves all the
+## time, where leaving loses nothing.
+@export var confirm_progress_loss := true
 ## The action that opens the pause menu and closes it again. If the project does not
 ## declare it, the session creates it at run time with Esc and Start.
 @export var pause_action: StringName = &"game_pause"

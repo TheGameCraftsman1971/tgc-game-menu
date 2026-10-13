@@ -37,6 +37,7 @@ func _ready() -> void:
 	_check_catalogs()
 	_check_languages()
 	await _check_demo()
+	await _check_confirmations()
 	await _check_default_config()
 	await _check_no_main_menu()
 	_remove_bench_files()
@@ -521,6 +522,76 @@ func _check_demo() -> void:
 	session.play()
 	_expect(started == [3, 2], "\"New game\" stops the game before starting another", str(started))
 	session.to_main_menu()
+	await _unmount(demo)
+
+
+## "New game", "Main menu" and "Quit" ask first when they would abandon a game in progress.
+## "Quit" is never confirmed here: it would end the bench.
+func _check_confirmations() -> void:
+	_section("Confirmations")
+	var demo := _mount(_bench_config())
+	await get_tree().process_frame
+	var session := demo.session()
+	var menu := session.menu()
+	var play: Button = menu.get_node("%Play")
+	var main_menu: Button = menu.get_node("%MainMenu")
+	var quit: Button = menu.get_node("%Quit")
+	var cancel: Button = menu.get_node("%Cancel")
+	var accept: Button = menu.get_node("%ConfirmAction")
+	var question: Label = menu.get_node("%Question")
+	var focus := func() -> Control: return menu.get_viewport().gui_get_focus_owner()
+	var started := [0]
+	session.game_started.connect(func() -> void: started[0] += 1)
+
+	_expect(not session.needs_confirmation(), "on the main menu, there is nothing to lose")
+	play.pressed.emit()
+	_expect(session.is_in_game() and not menu.is_confirming(), "so \"Play\" starts at once")
+	session.pause()
+	_expect(session.needs_confirmation(), "during a game, its progress is at risk")
+	main_menu.pressed.emit()
+	_expect(menu.is_confirming() and session.is_in_game(), "\"Main menu\" asks before abandoning the game")
+	_expect(not (menu.get_node("%Root") as Control).visible, "in place of the menu, which cannot show through")
+	_expect(question.text == "TGC_CONFIRM_MAIN_MENU" and accept.text == "TGC_MAIN_MENU",
+			"the modal asks the question, and its button names the action")
+	_expect(focus.call() == cancel, "the focus starts on \"Cancel\"")
+	_expect(cancel.get_node(cancel.focus_neighbor_left) == accept and cancel.get_node(cancel.focus_neighbor_bottom) == cancel
+			and accept.get_node(accept.focus_next) == cancel, "and cannot leave the modal")
+	session.toggle_pause()
+	_expect(not menu.is_confirming() and get_tree().paused and menu.is_open(),
+			"the pause gesture (Esc, B) closes the modal, and only the modal")
+	_expect(focus.call() == main_menu and (menu.get_node("%Root") as Control).visible,
+			"giving the menu back, and the focus to the button that asked")
+	main_menu.pressed.emit()
+	accept.pressed.emit()
+	_expect(not session.is_in_game() and menu.is_open() and not menu.is_confirming(),
+			"confirmed, \"Main menu\" abandons the game")
+
+	session.play()
+	session.pause()
+	play.pressed.emit()
+	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_NEW_GAME", "\"New game\" asks too")
+	accept.pressed.emit()
+	_expect(started[0] == 3 and not get_tree().paused, "and, confirmed, starts another game", str(started))
+
+	session.pause()
+	quit.pressed.emit()
+	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_QUIT", "\"Quit\" asks too")
+	cancel.pressed.emit()
+	_expect(not menu.is_confirming() and session.is_in_game() and focus.call() == quit,
+			"\"Cancel\" gives up, and the game is still there")
+	main_menu.pressed.emit()
+	session.pause()
+	_expect(not menu.is_confirming(), "reopening the menu never leaves a modal behind")
+
+	session.progress_at_risk = false
+	main_menu.pressed.emit()
+	_expect(not session.is_in_game(), "a game with nothing to lose (just saved) leaves at once")
+	session.play()
+	_expect(session.progress_at_risk, "a new game has progress at risk again")
+	session.config.confirm_progress_loss = false
+	session.pause()
+	main_menu.pressed.emit()
+	_expect(not session.is_in_game() and not menu.is_confirming(), "and with confirmations off, nothing is asked")
 	await _unmount(demo)
 
 

@@ -119,3 +119,66 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="Confirm" type="Control" parent="Frame"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Shade" type="ColorRect" parent="Frame/Confirm"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.015, 0.03, 0.55)
+
+[node name="Centre" type="CenterContainer" parent="Frame/Confirm"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Frame/Confirm/Centre"]
+layout_mode = 2
+
+[node name="Column" type="VBoxContainer" parent="Frame/Confirm/Centre/Panel"]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Question" type="Label" parent="Frame/Confirm/Centre/Panel/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Loss" type="Label" parent="Frame/Confirm/Centre/Panel/Column"]
+layout_mode = 2
+text = "TGC_CONFIRM_LOSS"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Frame/Confirm/Centre/Panel/Column"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Cancel" type="Button" parent="Frame/Confirm/Centre/Panel/Column/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_CANCEL"
+
+[node name="ConfirmAction" type="Button" parent="Frame/Confirm/Centre/Panel/Column/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2

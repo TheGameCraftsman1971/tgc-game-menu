@@ -21,6 +21,9 @@ from a single resource.
   action is taken from the one that had it. The pause always keeps a keyboard key. Keys are
   named as they are **engraved** on the player's keyboard (Z on an AZERTY for the W
   position), gamepad buttons for both families of pads ("A / Cross").
+- **Confirmation before losing a game.** During a game, *New game*, *Main menu* and *Quit*
+  first ask, in a modal whose focus starts on *Cancel* and cannot wander off. A game that
+  has just saved can say there is nothing to lose (`progress_at_risk = false`).
 - **Your own pages** after the built-in ones, each with its button in the sub-menu.
 - **Settings saved at each change and read back without trusting the file**: wrong types,
   values off the list, unreadable inputs all fall back on the defaults instead of crashing.
@@ -68,6 +71,7 @@ the Inspector, and assign it to the session's `config`. Everything has a working
 | | `start_on_main_menu` | Off: a game starts at once, and the menu is only a pause menu. |
 | | `pause_on_focus_loss` | Pause when the window loses the focus during a game. |
 | | `hide_quit_on_web` | Hide *Quit* in a web build. |
+| | `confirm_progress_loss` | Ask before *New game*, *Main menu* and *Quit* abandon a game in progress. Off for a game that saves all the time. |
 | | `pause_action` | The action that opens and closes the pause menu (`game_pause`). |
 | | `theme` | The menu's theme. Empty: your project's theme. |
 | | `menu_scene` | Your own copy of `menu/tgc_game_menu.tscn`, to restyle the root. |
@@ -131,6 +135,7 @@ to the add-on's CSV.
 | `controls_changed(bindings)` | A control was remapped: refresh your on-screen help. |
 | `play()`, `resume()`, `pause()`, `toggle_pause()`, `to_main_menu()`, `quit()` | What the buttons do, for your own code and your tests. |
 | `is_paused()`, `is_in_game()`, `menu()` | |
+| `progress_at_risk` | True when a game starts. Set it to false when the game has just saved, back to true when there is something new to lose: the confirmations only appear while it is true. |
 | `general`, `display`, `audio`, `bindings` | The settings: observable objects (`changed`) that the session applies and saves. |
 
 For automated tests that must not touch the player's files, give the session a copy of the

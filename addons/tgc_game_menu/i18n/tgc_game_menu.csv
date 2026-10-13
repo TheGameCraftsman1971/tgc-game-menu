@@ -13,6 +13,11 @@ TGC_MAIN_MENU,Main menu,Menu principal,Hauptmenü,Menú principal
 TGC_QUIT,Quit game,Quitter le jeu,Spiel beenden,Salir del juego
 TGC_RESTORE,Reset,Rétablir,Zurücksetzen,Restablecer
 TGC_BACK,Back,Retour,Zurück,Volver
+TGC_CANCEL,Cancel,Annuler,Abbrechen,Cancelar
+TGC_CONFIRM_NEW_GAME,Start a new game?,Commencer une nouvelle partie ?,Ein neues Spiel beginnen?,¿Empezar una nueva partida?
+TGC_CONFIRM_MAIN_MENU,Back to the main menu?,Revenir au menu principal ?,Zurück zum Hauptmenü?,¿Volver al menú principal?
+TGC_CONFIRM_QUIT,Quit the game?,Quitter le jeu ?,Das Spiel beenden?,¿Salir del juego?
+TGC_CONFIRM_LOSS,Progress in the current game will be lost.,La progression de la partie en cours sera perdue.,Der Fortschritt des laufenden Spiels geht verloren.,Se perderá el progreso de la partida en curso.
 TGC_LANGUAGE,Language,Langue,Sprache,Idioma
 TGC_LANGUAGE_AUTO,System language,Celle du système,Systemsprache,Idioma del sistema
 TGC_VOLUME_MASTER,Master volume,Volume général,Gesamtlautstärke,Volumen general

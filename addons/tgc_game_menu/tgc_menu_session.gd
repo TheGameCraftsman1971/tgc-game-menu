@@ -57,6 +57,11 @@ var general: TgcGeneralSettings
 var display: TgcDisplaySettings
 var audio: TgcAudioSettings
 var bindings: TgcControlBindings
+## The game in progress has something that leaving it would lose. True when a game starts;
+## a game that has just saved sets it to false, and back to true when there is something new
+## to lose. "New game", "Main menu" and "Quit" ask for a confirmation while it is true
+## ([member TgcMenuConfig.confirm_progress_loss]).
+var progress_at_risk := true
 
 var _menu: TgcGameMenu
 var _in_game := false
@@ -128,6 +133,12 @@ func menu() -> TgcGameMenu:
 	return _menu
 
 
+## True if leaving the game now would lose something: what the menu asks before "New game",
+## "Main menu" and "Quit".
+func needs_confirmation() -> bool:
+	return config.confirm_progress_loss and _in_game and progress_at_risk
+
+
 ## The pause gesture: pauses, goes up one page, or resumes from the menu's root if there is
 ## a game to resume.
 func toggle_pause() -> void:
@@ -154,6 +165,7 @@ func resume() -> void:
 func play() -> void:
 	_stop_game()
 	_in_game = true
+	progress_at_risk = true
 	game_started.emit()
 	resume()
 
