@@ -8,6 +8,7 @@ TGC_GENERAL,General,Général,Allgemein,General
 TGC_DISPLAY,Display,Affichage,Anzeige,Pantalla
 TGC_SOUND,Sound,Son,Ton,Sonido
 TGC_CONTROLS,Controls,Commandes,Steuerung,Controles
+TGC_SETTINGS,Settings,Paramètres,Einstellungen,Ajustes
 TGC_MAIN_MENU,Main menu,Menu principal,Hauptmenü,Menú principal
 TGC_QUIT,Quit game,Quitter le jeu,Spiel beenden,Salir del juego
 TGC_RESTORE,Reset,Rétablir,Zurücksetzen,Restablecer

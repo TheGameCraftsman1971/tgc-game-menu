@@ -84,7 +84,6 @@ action_primary={
 [internationalization]
 
 locale/translations=PackedStringArray("res://demo/i18n/demo.en.translation", "res://demo/i18n/demo.fr.translation", "res://addons/tgc_game_menu/i18n/tgc_game_menu.en.translation", "res://addons/tgc_game_menu/i18n/tgc_game_menu.fr.translation", "res://addons/tgc_game_menu/i18n/tgc_game_menu.de.translation", "res://addons/tgc_game_menu/i18n/tgc_game_menu.es.translation")
-locale/fallback="en"
 
 [rendering]
 

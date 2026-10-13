@@ -66,6 +66,9 @@ What it has already decided here, and which must not be quietly undone:
   German.
 - **Display defaults are what the project declares** (window mode and size, vsync, max fps,
   3D scale, 3D MSAA). The config decides what is shown and offered, not the defaults.
+- **Three levels: the root, the Settings sub-menu, the pages.** Going back climbs one level
+  at a time and gives the focus back to the button one came from: a gamepad never loses its
+  place. `TgcGameMenu.SETTINGS` is a reserved page id.
 - **§11 — YAGNI.** Four built-in pages and an extension point (`TgcMenuPage`,
   `extra_pages`). A game-specific setting is the game's: its own Resource, its own page, its
   own file.
@@ -130,8 +133,8 @@ chosen among `captures/`.
 
 ## Where this stands
 
-Version **1.0.0**, the first: extracted, checked (bench: 128 checks), installed back into the
-template (its own bench: 48 checks). The GitHub repository is private like the other add-ons.
+Version **1.0.0**, the first: extracted, checked (bench: 136 checks), installed back into the
+template (its own bench: 49 checks). The GitHub repository is private like the other add-ons.
 Not yet submitted to the Asset Store: making the repository public and filling in the store
 page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage
 disclosure) is the author's call. The French translation of the user documentation is to be

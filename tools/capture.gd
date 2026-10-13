@@ -40,7 +40,10 @@ func _ready() -> void:
 		session.general.locale = locale
 		await _wait(0.3)
 		await _shot("%s_01_main_menu" % locale)
-		var index := 2
+		menu.show_page(TgcGameMenu.SETTINGS)
+		await _wait(0.2)
+		await _shot("%s_02_settings" % locale)
+		var index := 3
 		for page in menu.page_ids():
 			menu.show_page(page)
 			await _wait(0.2)

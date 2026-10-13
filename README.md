@@ -5,19 +5,18 @@ display, volumes per bus, and keyboard, mouse and gamepad controls remapped on s
 Settings are saved at each change and read back without trusting the file. English,
 French, German and Spanish.
 
-![Main menu](screenshots/en_01_main_menu.png)
-
 | | |
 | --- | --- |
-| ![Controls](screenshots/en_05_controls.png) | ![Display](screenshots/en_03_display.png) |
-| ![Pause](screenshots/en_08_pause.png) | ![Commandes](screenshots/fr_05_controls.png) |
+| ![Main menu](screenshots/en_01_main_menu.png) | ![Settings](screenshots/en_02_settings.png) |
+| ![Controls](screenshots/en_06_controls.png) | ![Display](screenshots/en_04_display.png) |
+| ![Pause](screenshots/en_09_pause.png) | ![Commandes](screenshots/fr_06_controls.png) |
 
 ## What it does
 
 - **One menu, two faces**: the main menu at start, the pause menu during a game (Esc,
   Start, or the window losing the focus).
-- **General, Display, Sound, Controls** pages, each row and each page optional, plus **your
-  own pages** after them.
+- **A Settings sub-menu** with the General, Display, Sound and Controls pages, each row and
+  each page optional, plus **your own pages** after them.
 - **Remapping that respects players**: keyboard-and-mouse and gamepad columns that never
   touch each other, a key given to an action taken from the one that had it, a pause that
   always keeps a key, keys named as engraved on the player's keyboard (AZERTY, QWERTZ…).

@@ -403,7 +403,12 @@ func _check_demo() -> void:
 	_expect(title.text == "TGC Game Menu" and not resume.visible, "the main menu: the project's name, nothing to resume")
 	var pages: Array[StringName] = [&"general", &"display", &"sound", &"controls", &"gameplay"]
 	_expect(menu.page_ids() == pages, "the built-in pages, then the game's own", str(menu.page_ids()))
-	_expect(menu.get_node("%PageButtons").get_child_count() == 5, "each with its button")
+	var settings: Control = menu.get_node("%Settings")
+	var page_buttons: Node = menu.get_node("%PageButtons")
+	_expect(page_buttons.get_child_count() == 5 and settings.is_ancestor_of(page_buttons),
+			"each with its button, in the Settings sub-menu")
+	_expect((menu.get_node("%OpenSettings") as Button).visible and not settings.visible,
+			"the root offers \"Settings\", and the sub-menu waits behind it")
 	_expect(InputMap.action_get_events(&"ui_accept").any(func(e: InputEvent) -> bool: return e is InputEventJoypadButton),
 			"ui_accept answers to a gamepad button")
 
@@ -440,11 +445,26 @@ func _check_demo() -> void:
 	Input.action_release(&"move_right")
 	_expect(world.player_position().is_equal_approx(frozen), "in pause, the game no longer moves")
 
+	menu.show_page(TgcGameMenu.SETTINGS)
+	_expect(settings.visible and not (menu.get_node("%Root") as Control).visible, "\"Settings\" opens the sub-menu")
 	menu.show_page(&"display")
 	session.toggle_pause()
-	_expect(get_tree().paused and menu.current_page() == TgcGameMenu.ROOT, "in a settings page, the gesture goes up one page")
+	_expect(get_tree().paused and menu.current_page() == TgcGameMenu.SETTINGS,
+			"in a settings page, the gesture goes up to the sub-menu")
+	_expect(menu.get_viewport().gui_get_focus_owner() == page_buttons.get_child(1),
+			"with the focus on the button of the page one left")
+	session.toggle_pause()
+	_expect(get_tree().paused and menu.current_page() == TgcGameMenu.ROOT, "then up to the root")
+	_expect(menu.get_viewport().gui_get_focus_owner() == menu.get_node("%OpenSettings"),
+			"with the focus on \"Settings\"")
 	session.toggle_pause()
 	_expect(not get_tree().paused and not menu.is_open(), "at the root, it resumes the game")
+	session.pause()
+	_expect(menu.get_viewport().gui_get_focus_owner() == resume, "and the menu reopens on \"Resume\"")
+	menu.show_page(&"sound")
+	menu.page(&"sound").closed.emit()
+	_expect(menu.current_page() == TgcGameMenu.SETTINGS, "a page's \"Back\" goes up to the sub-menu")
+	session.resume()
 
 	session.pause()
 	menu.show_page(&"display")
@@ -520,6 +540,20 @@ func _check_default_config() -> void:
 	_expect(session.bindings.actions() == actions, "the Controls page has the pause action alone")
 	_expect(session.bindings.is_essential(&"game_pause"), "which keeps a keyboard key")
 	await _unmount(session)
+	_remove_bench_files()
+
+	var bare := TgcMenuSession.new()
+	var nothing := config.duplicate() as TgcMenuConfig
+	nothing.show_general_page = false
+	nothing.show_display_page = false
+	nothing.show_sound_page = false
+	nothing.show_controls_page = false
+	bare.config = nothing
+	add_child(bare)
+	await get_tree().process_frame
+	_expect(not (bare.menu().get_node("%OpenSettings") as Button).visible,
+			"without a single page, \"Settings\" is hidden")
+	await _unmount(bare)
 	_remove_bench_files()
 
 

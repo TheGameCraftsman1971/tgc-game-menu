@@ -3,8 +3,11 @@
 A main menu and a pause menu for Godot 4, with the settings players expect, configured
 from a single resource.
 
-- **One menu, two faces.** At start, the game's title and *Play*. During a game, *Paused*,
-  *Resume*, *New game* and *Main menu*. *Quit* hides itself in a web build.
+- **One menu, two faces.** At start, the game's title, *Play*, *Settings* and *Quit*.
+  During a game, *Paused*, *Resume*, *New game*, *Settings*, *Main menu* and *Quit*. *Quit*
+  hides itself in a web build.
+- **A Settings sub-menu** lists the pages below. *Back*, Esc or the gamepad's B goes up one
+  level at a time — page, sub-menu, root — and the focus comes back to the button you left.
 - **General**: the language, offered from **your game's** translations, each named in its
   own language, with *System language* (which reads the browser's interface language on
   the web, not just its first preferred one).
@@ -18,7 +21,7 @@ from a single resource.
   action is taken from the one that had it. The pause always keeps a keyboard key. Keys are
   named as they are **engraved** on the player's keyboard (Z on an AZERTY for the W
   position), gamepad buttons for both families of pads ("A / Cross").
-- **Your own pages** after the built-in ones, each with its button.
+- **Your own pages** after the built-in ones, each with its button in the sub-menu.
 - **Settings saved at each change and read back without trusting the file**: wrong types,
   values off the list, unreadable inputs all fall back on the defaults instead of crashing.
   Inputs are stored as readable text (`t:87`, `b:0`, `a:1:+`), never as serialised objects.
@@ -68,7 +71,7 @@ the Inspector, and assign it to the session's `config`. Everything has a working
 | | `pause_action` | The action that opens and closes the pause menu (`game_pause`). |
 | | `theme` | The menu's theme. Empty: your project's theme. |
 | | `menu_scene` | Your own copy of `menu/tgc_game_menu.tscn`, to restyle the root. |
-| Pages | `show_*_page` | Hide a built-in page. A page with nothing to show hides itself (General with a single language, Sound with no bus). |
+| Pages | `show_*_page` | Hide a built-in page. A page with nothing to show hides itself (General with a single language, Sound with no bus); with no page at all, *Settings* hides too. |
 | | `extra_pages` | Your own pages (see below). |
 | Languages | `languages` | The languages offered. Empty: those of your translations. |
 | Display | `show_*` | Hide a row (MSAA and render scale mean nothing to a 2D game). |
@@ -97,7 +100,8 @@ and redo it on `controls_changed` and on `NOTIFICATION_TRANSLATION_CHANGED`.
 ## Your own page
 
 A scene whose root extends **TgcMenuPage**, with a unique `page_id` and a `title` (a
-translation key), whose *Back* button emits `closed`. List it in `extra_pages`. The page
+translation key), whose *Back* button emits `closed` (back up to the Settings sub-menu).
+List it in `extra_pages`; its button appears in the sub-menu, after the built-in pages'. The page
 shows your settings and changes them; your game applies and saves them. Give it your
 settings once the session is ready:
 

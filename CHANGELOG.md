@@ -7,6 +7,7 @@ the settings and the remappable controls had been written and checked first.
 
 - `TgcMenuSession`: the pause, the main menu and the pause menu, the player's settings.
 - `TgcMenuConfig`: everything a game decides, in one resource.
-- Pages: General (language), Display, Sound (one slider per bus), Controls (keyboard and
-  mouse, gamepad), and the game's own pages (`TgcMenuPage`).
+- A Settings sub-menu with the pages: General (language), Display, Sound (one slider per
+  bus), Controls (keyboard and mouse, gamepad), and the game's own pages (`TgcMenuPage`).
+  Going back climbs one level at a time and gives the focus back to the button left.
 - Catalogue in English, French, German and Spanish; the languages offered are the game's.
