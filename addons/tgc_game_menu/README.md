@@ -135,4 +135,4 @@ tree.
 
 ## License
 
-MIT — see `LICENSE.txt`. © 2026 Ulric — The GameCraftsman.
+MIT — see `LICENSE.txt`. © 2026 Ulric — TheGameCraftsman.

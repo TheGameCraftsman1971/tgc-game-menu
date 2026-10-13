@@ -53,4 +53,4 @@ It is a Godot 4.7 project that develops and checks the add-on. Only
 
 ## License
 
-MIT — © 2026 Ulric — The GameCraftsman.
+MIT — © 2026 Ulric — TheGameCraftsman.
