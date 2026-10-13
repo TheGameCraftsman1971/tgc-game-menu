@@ -1,3 +1,4 @@
+@tool
 class_name TgcMenuConfig
 extends Resource
 
@@ -182,6 +183,19 @@ func remappable() -> Array[TgcRemappableAction]:
 		if not listed.has(quick_load_action):
 			rows.append(TgcRemappableAction.make(quick_load_action, "TGC_ACTION_QUICK_LOAD"))
 	return rows
+
+
+## The inputs of the actions the session creates when the project does not declare them, in
+## plain text ([method TgcControlBindings.encode]): the pause (Esc, Start), and with the quick
+## saves on, their shortcuts (F5, F9).
+func built_in_inputs() -> Dictionary[StringName, PackedStringArray]:
+	var inputs: Dictionary[StringName, PackedStringArray] = {
+		pause_action: PackedStringArray(["t:%d" % KEY_ESCAPE, "b:%d" % JOY_BUTTON_START]),
+	}
+	if quick_saves_enabled():
+		inputs[quick_save_action] = PackedStringArray(["t:%d" % KEY_F5])
+		inputs[quick_load_action] = PackedStringArray(["t:%d" % KEY_F9])
+	return inputs
 
 
 ## True if the quick save and the quick load exist (their shortcuts with them).

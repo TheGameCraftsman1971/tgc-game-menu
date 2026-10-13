@@ -1,3 +1,4 @@
+@tool
 class_name TgcGameMenu
 extends CanvasLayer
 
@@ -88,6 +89,9 @@ var _session: TgcMenuSession
 var _home_title := ""
 var _pages: Dictionary[StringName, TgcMenuPage] = {}
 var _page_openers: Dictionary[StringName, Button] = {}
+## Pages whose script does not run in the editor (not `@tool`): in a preview they are shown
+## as their scene draws them, and none of their code is called.
+var _inert_pages: Array[StringName] = []
 ## The pages opened from the root rather than from Settings.
 var _root_pages: Array[StringName] = []
 var _page := ROOT
@@ -103,6 +107,10 @@ func setup(session: TgcMenuSession) -> void:
 
 
 func _ready() -> void:
+	# Opened as a scene in the editor, the menu stays as it is drawn: hiding it here would end
+	# up saved in the scene. Only a session — a preview's, in the editor — brings it to life.
+	if Engine.is_editor_hint() and _session == null:
+		return
 	visible = false
 	_resume.pressed.connect(resume_requested.emit)
 	_play.pressed.connect(_ask.bind(play_requested, "TGC_CONFIRM_NEW_GAME", "TGC_NEW_GAME", _play))
@@ -148,7 +156,7 @@ func open(in_game: bool) -> void:
 
 
 func close() -> void:
-	if _pages.has(_page):
+	if _pages.has(_page) and not _inert_pages.has(_page):
 		_pages[_page].leave()
 	# The menu always reopens at its root, with the focus on its first button; and nothing of
 	# the page left must show if the menu is shown again for a lone question.
@@ -208,7 +216,8 @@ func show_page(target: StringName) -> void:
 		return
 	var previous := _page
 	if previous != target and _pages.has(previous):
-		_pages[previous].leave()
+		if not _inert_pages.has(previous):
+			_pages[previous].leave()
 	_page = target
 	_root.visible = target == ROOT
 	_settings.visible = target == SETTINGS
@@ -229,7 +238,8 @@ func show_page(target: StringName) -> void:
 			elif _page_buttons.get_child_count() > 0:
 				(_page_buttons.get_child(0) as Button).grab_focus()
 		_:
-			_pages[target].focus_first()
+			if not _inert_pages.has(target):
+				_pages[target].focus_first()
 
 
 ## Opens the modal: `question` and `detail` (keys; an empty detail hides its line), "Cancel"
@@ -346,19 +356,28 @@ func _add_page(scene: PackedScene, opener: Button = null) -> void:
 		push_warning("TGC Game Menu: the page id \"%s\" of %s is empty, reserved or taken." % [added.page_id, scene.resource_path])
 		added.free()
 		return
-	added.setup(_session)
-	if not added.is_relevant():
-		added.free()
-		return
+	# In the editor, a game's page whose script is not a tool is a placeholder: none of its
+	# code can run, so it is shown as its scene draws it.
+	var script := added.get_script() as Script
+	var inert := Engine.is_editor_hint() and script != null and not script.is_tool()
+	if inert:
+		_inert_pages.append(added.page_id)
+	else:
+		added.setup(_session)
+		if not added.is_relevant():
+			added.free()
+			return
 	added.visible = false
 	_pages_holder.add_child(added)
 	_pages[added.page_id] = added
 	if opener != null:
 		_root_pages.append(added.page_id)
 		_page_openers[added.page_id] = opener
-		added.closed.connect(show_page.bind(ROOT))
+		if not inert:
+			added.closed.connect(show_page.bind(ROOT))
 		return
-	added.closed.connect(show_page.bind(SETTINGS))
+	if not inert:
+		added.closed.connect(show_page.bind(SETTINGS))
 	var button := Button.new()
 	button.name = "Open" + String(added.page_id).to_pascal_case()
 	# A key: the button translates it, and follows the language.

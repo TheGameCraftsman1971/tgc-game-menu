@@ -28,6 +28,8 @@ French, German and Spanish.
   with the focus on *Cancel*.
 - **Your game's languages only**: the menu offers the languages your game is translated
   into, not the four the add-on speaks.
+- **A live preview in the editor**: pick a screen and a language, edit your theme, and see
+  the menu change as you type — without running the game.
 - **Defensive saving**: a damaged settings file falls back on the defaults, field by field,
   instead of crashing the game.
 - **No dependency, no asset.**
@@ -53,6 +55,8 @@ It is a Godot 4.7 project that develops and checks the add-on. Only
 | --- | --- |
 | `demo/` | The smallest game using the add-on, with a page of its own. Run the project. |
 | `tools/checks.tscn` | The bench, headless: `godot --headless --path . res://tools/checks.tscn` |
+| `tools/editor_check.gd` | The editor's bench: `TGC_EDITOR_CHECK=1 godot --path . --editor` |
+| `demo/menu_preview.tscn` | The preview, set on the demo's config. Open it in the editor. |
 | `tools/capture.tscn` | Screenshots of every page, per language (opens a window). |
 | `tools/install-into.sh` | Copies the add-on into a project, or updates it there. |
 

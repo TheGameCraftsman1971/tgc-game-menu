@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/tgc_game_menu/preview/tgc_menu_preview.gd" id="1_preview"]
+
+[node name="TgcMenuPreview" type="SubViewportContainer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+stretch = true
+script = ExtResource("1_preview")

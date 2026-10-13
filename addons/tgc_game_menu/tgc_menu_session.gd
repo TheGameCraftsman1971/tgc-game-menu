@@ -1,3 +1,4 @@
+@tool
 @icon("res://addons/tgc_game_menu/icon.svg")
 class_name TgcMenuSession
 extends Node
@@ -35,6 +36,14 @@ extends Node
 ## gesture. In a settings page, that gesture — and [code]ui_cancel[/code] (Esc, B) — goes up
 ## one page. A game in progress also pauses itself when the window loses the focus. "Main
 ## menu" abandons the game and reopens the start menu.
+##
+## ## In the editor
+##
+## The script runs in the editor (`@tool`) only so that [TgcMenuPreview] can drive it: a
+## session in a scene opened in the editor does **nothing** — it reads no file, creates no
+## action, sets no language, touches no window. A preview session ([method setup_preview])
+## builds its menu from settings at their defaults, its controls from the project settings,
+## and saves nowhere.
 ##
 ## ## Saves
 ##
@@ -90,9 +99,15 @@ var saves: TgcSaveProvider:
 var _menu: TgcGameMenu
 var _toast: TgcToast
 var _in_game := false
+var _preview := false
 
 
 func _ready() -> void:
+	if _preview:
+		_build_menu()
+		return
+	if Engine.is_editor_hint():
+		return
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if config == null:
 		config = load(DEFAULT_CONFIG) as TgcMenuConfig
@@ -113,19 +128,11 @@ func _ready() -> void:
 	display.changed.connect(_on_display_changed)
 	audio.changed.connect(_on_audio_changed)
 	bindings.changed.connect(_on_bindings_changed)
-
-	var scene := config.menu_scene if config.menu_scene != null else load(DEFAULT_MENU) as PackedScene
-	_menu = scene.instantiate() as TgcGameMenu
-	_menu.setup(self)
-	add_child(_menu)
+	_build_menu()
 	_menu.resume_requested.connect(resume)
 	_menu.play_requested.connect(play)
 	_menu.main_menu_requested.connect(to_main_menu)
 	_menu.quit_requested.connect(quit)
-	_toast = (load(TOAST) as PackedScene).instantiate() as TgcToast
-	add_child(_toast)
-	if config.theme != null:
-		_toast.set_theme(config.theme)
 	if config.start_on_main_menu:
 		pause()
 	else:
@@ -134,7 +141,40 @@ func _ready() -> void:
 		play.call_deferred()
 
 
+## Prepares a session for [TgcMenuPreview], **before** it enters the tree: the settings at
+## their defaults (no file read), the controls from the project settings (no action
+## created), `in_game` deciding which face the menu shows, `fake_saves` standing in for the
+## game's. Its `_ready()` then only builds the menu.
+func setup_preview(with_config: TgcMenuConfig, in_game: bool, fake_saves: TgcSaveProvider) -> void:
+	_preview = true
+	config = with_config
+	general = TgcGeneralSettings.new(config)
+	display = TgcDisplaySettings.new(config)
+	audio = TgcAudioSettings.new(config)
+	bindings = TgcControlBindings.preview(config)
+	_in_game = in_game
+	saves = fake_saves
+
+
+## True for a session built by [TgcMenuPreview].
+func is_preview() -> bool:
+	return _preview
+
+
+func _build_menu() -> void:
+	var scene := config.menu_scene if config.menu_scene != null else load(DEFAULT_MENU) as PackedScene
+	_menu = scene.instantiate() as TgcGameMenu
+	_menu.setup(self)
+	add_child(_menu)
+	_toast = (load(TOAST) as PackedScene).instantiate() as TgcToast
+	add_child(_toast)
+	if config.theme != null:
+		_toast.set_theme(config.theme)
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if Engine.is_editor_hint() or _preview:
+		return
 	if event.is_action_pressed(config.pause_action):
 		toggle_pause()
 		get_viewport().set_input_as_handled()
@@ -153,11 +193,15 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Progress is at risk as soon as the game runs: a frame played since the last save is a
 ## frame a "Main menu" would lose.
 func _process(_delta: float) -> void:
+	if Engine.is_editor_hint() or _preview:
+		return
 	if _in_game and not get_tree().paused:
 		progress_at_risk = true
 
 
 func _notification(what: int) -> void:
+	if Engine.is_editor_hint() or _preview:
+		return
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and is_node_ready() \
 			and config.pause_on_focus_loss and _in_game and not is_paused():
 		pause()
@@ -274,7 +318,7 @@ func can_save() -> bool:
 
 ## Saves the game in progress into `slot`.
 func save_to(slot: TgcSaveSlot) -> Error:
-	if not can_save():
+	if _preview or not can_save():
 		return ERR_UNAVAILABLE
 	var error := saves.save_game(slot)
 	if error == OK:
@@ -286,7 +330,7 @@ func save_to(slot: TgcSaveSlot) -> Error:
 ## Loads `slot`: stops the game in progress, starts a fresh one, and has the provider restore
 ## the saved state over it. On failure, back to the main menu.
 func load_from(slot: TgcSaveSlot) -> Error:
-	if not saves_enabled() or describe(slot) == null:
+	if _preview or not saves_enabled() or describe(slot) == null:
 		return ERR_DOES_NOT_EXIST
 	_stop_game()
 	_in_game = true
@@ -302,7 +346,7 @@ func load_from(slot: TgcSaveSlot) -> Error:
 
 
 func delete_save(slot: TgcSaveSlot) -> Error:
-	if not saves_enabled():
+	if _preview or not saves_enabled():
 		return ERR_UNAVAILABLE
 	var error := saves.delete_save(slot)
 	if error == OK:
@@ -313,7 +357,7 @@ func delete_save(slot: TgcSaveSlot) -> Error:
 ## Saves into the quick slots in turn: the first empty one, else the oldest.
 func quick_save() -> Error:
 	var slots := quick_slots()
-	if slots.is_empty() or not _in_game:
+	if _preview or slots.is_empty() or not _in_game:
 		return ERR_UNAVAILABLE
 	if not saves.can_save():
 		notify("TGC_CANNOT_SAVE")
@@ -338,6 +382,8 @@ func quick_save() -> Error:
 ## shows nothing but the modal; "Cancel" puts everything back as it was. OK when the question
 ## is asked: the answer does the rest.
 func quick_load() -> Error:
+	if _preview:
+		return ERR_UNAVAILABLE
 	var latest: TgcSaveSlot = null
 	for slot in existing_saves():
 		if slot.is_quick():
@@ -405,10 +451,9 @@ func _set_paused(paused: bool) -> void:
 ## `ui_accept` and `ui_cancel` answer to A and B. A remappable action the project does not
 ## declare is reported, once: it would silently be missing from the Controls page.
 func _ensure_actions() -> void:
-	_declare(config.pause_action, [KEY_ESCAPE], [JOY_BUTTON_START])
-	if config.quick_saves_enabled():
-		_declare(config.quick_save_action, [KEY_F5], [])
-		_declare(config.quick_load_action, [KEY_F9], [])
+	var built_in := config.built_in_inputs()
+	for action: StringName in built_in:
+		_declare(action, built_in[action])
 	if config.gamepad_ui_buttons:
 		_give_pad_button(&"ui_accept", JOY_BUTTON_A)
 		_give_pad_button(&"ui_cancel", JOY_BUTTON_B)
@@ -417,20 +462,15 @@ func _ensure_actions() -> void:
 			push_warning("TGC Game Menu: the remappable action \"%s\" is not declared in the project's Input Map." % entry.action)
 
 
-## Creates an action the project does not declare, with these keys and gamepad buttons.
-static func _declare(action: StringName, keys: Array[Key], buttons: Array[JoyButton]) -> void:
+## Creates an action the project does not declare, with these inputs in plain text.
+static func _declare(action: StringName, inputs: PackedStringArray) -> void:
 	if InputMap.has_action(action):
 		return
 	InputMap.add_action(action)
-	for key in keys:
-		var press := InputEventKey.new()
-		press.physical_keycode = key
-		InputMap.action_add_event(action, press)
-	for button in buttons:
-		var pad := InputEventJoypadButton.new()
-		pad.button_index = button
-		pad.device = -1
-		InputMap.action_add_event(action, pad)
+	for code in inputs:
+		var event := TgcControlBindings.decode(code)
+		if event != null:
+			InputMap.action_add_event(action, event)
 
 
 static func _give_pad_button(action: StringName, button: JoyButton) -> void:

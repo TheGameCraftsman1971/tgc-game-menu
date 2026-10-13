@@ -1,3 +1,4 @@
+@tool
 class_name TgcToast
 extends CanvasLayer
 
@@ -17,22 +18,21 @@ var _fade: Tween
 @onready var _label: Label = %Message
 
 
-func _ready() -> void:
-	_panel.visible = false
-
-
 ## The theme of the menu, for the panel and its text.
 func set_theme(theme: Theme) -> void:
 	_frame.theme = theme
 
 
-## Shows `text`, already translated, in place of whatever was shown.
-func show_message(text: String) -> void:
+## Shows `text`, already translated, in place of whatever was shown. `lasting`: it stays, for
+## a preview.
+func show_message(text: String, lasting := false) -> void:
 	if _fade != null:
 		_fade.kill()
 	_label.text = text
 	_panel.modulate.a = 1.0
 	_panel.visible = true
+	if lasting:
+		return
 	_fade = create_tween()
 	_fade.tween_interval(SHOWN_SECONDS)
 	_fade.tween_property(_panel, "modulate:a", 0.0, FADE_SECONDS)

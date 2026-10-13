@@ -1,3 +1,4 @@
+@tool
 class_name TgcControlsPage
 extends TgcMenuPage
 
@@ -62,6 +63,9 @@ func is_relevant() -> bool:
 
 
 func _ready() -> void:
+	# Opened alone in the editor, the page has no session: it stays as it is drawn.
+	if session == null:
+		return
 	var column_width := bindings.slots * _SLOT_WIDTH + (bindings.slots - 1) * _GAP
 	(%KeyboardHeader as Control).custom_minimum_size.x = column_width
 	(%PadHeader as Control).custom_minimum_size.x = column_width
@@ -77,7 +81,7 @@ func _ready() -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready() and bindings != null:
 		cancel_capture()
 
 

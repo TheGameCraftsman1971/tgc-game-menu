@@ -1,3 +1,4 @@
+@tool
 class_name TgcControlBindings
 extends RefCounted
 
@@ -56,6 +57,10 @@ var slots := 2
 var _labels: Dictionary[StringName, String] = {}
 var _essential: Array[StringName] = []
 var _undeclared_defaults: Dictionary[StringName, PackedStringArray] = {}
+## A preview's inputs ([method preview]): read from the project settings, never from the
+## InputMap, which in the editor is the editor's.
+var _preview := false
+var _preview_events: Dictionary[StringName, Array] = {}
 
 
 func _init(menu_config: TgcMenuConfig = null) -> void:
@@ -73,11 +78,31 @@ func _init(menu_config: TgcMenuConfig = null) -> void:
 			_undeclared_defaults[action] = _encode_all(action)
 
 
+## Bindings for [TgcMenuPreview]: the inputs the project declares, or those the session would
+## create, read without touching the InputMap. Nothing is loaded nor saved.
+static func preview(menu_config: TgcMenuConfig) -> TgcControlBindings:
+	var bindings := TgcControlBindings.new(menu_config)
+	bindings._preview = true
+	var built_in := menu_config.built_in_inputs()
+	for action: StringName in bindings._labels:
+		var declared := ProjectSettings.has_setting("input/" + String(action))
+		if not declared and not built_in.has(action):
+			continue
+		var codes := bindings.defaults_of(action) if declared else built_in[action]
+		var found: Array[InputEvent] = []
+		for code in codes:
+			var event := decode(code)
+			if event != null:
+				found.append(event)
+		bindings._preview_events[action] = found
+	return bindings
+
+
 ## The remappable actions the project declares, in the order of the Controls page.
 func actions() -> Array[StringName]:
 	var found: Array[StringName] = []
 	for action: StringName in _labels:
-		if InputMap.has_action(action):
+		if (_preview_events.has(action) if _preview else InputMap.has_action(action)):
 			found.append(action)
 	return found
 
@@ -128,10 +153,11 @@ func save() -> bool:
 ## An action's inputs in a family, in the order of their slots.
 func events(action: StringName, family: Family) -> Array[InputEvent]:
 	var found: Array[InputEvent] = []
-	if InputMap.has_action(action):
-		for event in InputMap.action_get_events(action):
-			if family_of(event) == family and encode(event) != "":
-				found.append(event)
+	var all: Array = _preview_events.get(action, []) if _preview \
+			else (InputMap.action_get_events(action) if InputMap.has_action(action) else [])
+	for event: InputEvent in all:
+		if family_of(event) == family and encode(event) != "":
+			found.append(event)
 	return found
 
 

@@ -1,3 +1,4 @@
+@tool
 class_name TgcInputLabels
 extends RefCounted
 
@@ -111,4 +112,4 @@ static func knows_keyboard_layout() -> bool:
 
 
 static func _tr(key: String) -> String:
-	return "" if key.is_empty() else String(TranslationServer.translate(key))
+	return "" if key.is_empty() else TgcI18n.translate(key)

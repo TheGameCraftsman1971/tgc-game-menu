@@ -1,3 +1,4 @@
+@tool
 class_name DemoSettings
 extends Resource
 

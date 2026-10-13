@@ -1,3 +1,4 @@
+@tool
 class_name TgcGeneralPage
 extends TgcMenuPage
 
@@ -26,6 +27,9 @@ func is_relevant() -> bool:
 
 
 func _ready() -> void:
+	# Opened alone in the editor, the page has no session: it stays as it is drawn.
+	if session == null:
+		return
 	_language.item_selected.connect(func(index: int) -> void: settings.locale = _locales[index])
 	(%Restore as Button).pressed.connect(func() -> void: settings.restore_defaults())
 	(%Back as Button).pressed.connect(closed.emit)

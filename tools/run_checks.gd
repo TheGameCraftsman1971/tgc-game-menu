@@ -41,6 +41,7 @@ func _ready() -> void:
 	await _check_demo()
 	await _check_confirmations()
 	await _check_saves()
+	await _check_preview()
 	await _check_default_config()
 	await _check_no_main_menu()
 	_remove_bench_files()
@@ -768,6 +769,91 @@ func _check_saves() -> void:
 	session.saves = provider
 	await _unmount(demo)
 	_remove_bench_files()
+
+
+## The editor's preview, played here as it runs in the editor: every screen, its own
+## language, a theme tried, a config changed — and nothing of the game touched.
+func _check_preview() -> void:
+	_section("Preview")
+	var actions_before := InputMap.get_actions().size()
+	var pause_before := InputMap.action_get_events(&"game_pause").size()
+	var locale_before := TranslationServer.get_locale()
+	var play_before := TranslationServer.translate("TGC_PLAY")
+	var files := _fingerprint(DEMO_CONFIG.player_files())
+	var preview := TgcMenuPreview.new()
+	preview.config = DEMO_CONFIG
+	preview.locale = "fr"
+	add_child(preview)
+	await get_tree().process_frame
+	var menu := preview.session().menu()
+	var play: Button = menu.get_node("%Play")
+	_expect(preview.session().is_preview() and menu.is_open() and play.text == "TGC_PLAY",
+			"the preview draws the main menu, through a preview session")
+	_expect(play.atr(play.text) == "Jouer", "in the preview's language")
+	_expect(TranslationServer.get_locale() == locale_before and TranslationServer.translate("TGC_PLAY") == play_before,
+			"without changing the game's")
+
+	var screens := {
+		TgcMenuPreview.Screen.PAUSE_MENU: func(m: TgcGameMenu) -> bool: return (m.get_node("%Resume") as Button).visible,
+		TgcMenuPreview.Screen.SETTINGS: func(m: TgcGameMenu) -> bool: return m.current_page() == TgcGameMenu.SETTINGS,
+		TgcMenuPreview.Screen.SAVE: func(m: TgcGameMenu) -> bool: return m.current_page() == TgcGameMenu.SAVE,
+		TgcMenuPreview.Screen.LOAD: func(m: TgcGameMenu) -> bool: return m.current_page() == TgcGameMenu.LOAD,
+		TgcMenuPreview.Screen.CONFIRMATION: func(m: TgcGameMenu) -> bool: return m.is_confirming(),
+	}
+	for shown: TgcMenuPreview.Screen in screens:
+		preview.screen = shown
+		await get_tree().process_frame
+		_expect((screens[shown] as Callable).call(preview.session().menu()),
+				"the screen %s" % TgcMenuPreview.Screen.keys()[shown])
+
+	preview.screen = TgcMenuPreview.Screen.SAVE
+	await get_tree().process_frame
+	var save_page := preview.session().menu().page(&"save") as TgcSavesPage
+	_expect(save_page.rows().size() == 5 and save_page.rows()[0].text.contains("Chapitre 1")
+			and save_page.rows()[2].text.ends_with("Vide"), "Save shows two made-up saves, then empty slots",
+			save_page.rows()[0].text)
+	_expect(preview.session().save_to(preview.session().save_slots()[0]) == ERR_UNAVAILABLE
+			and preview.session().quick_load() == ERR_UNAVAILABLE, "and nothing in a preview saves nor loads")
+	preview.screen = TgcMenuPreview.Screen.LOAD
+	await get_tree().process_frame
+	_expect((preview.session().menu().page(&"load") as TgcSavesPage).rows().size() == 3,
+			"Load lists them, with one quick save")
+
+	preview.screen = TgcMenuPreview.Screen.PAGE
+	preview.page = &"controls"
+	await get_tree().process_frame
+	var controls := preview.session().menu().page(&"controls") as TgcControlsPage
+	_expect(preview.session().menu().current_page() == &"controls"
+			and controls.slot_text(&"move_forward", TgcControlBindings.Family.KEYBOARD, 0) == "W"
+			and controls.slot_text(&"game_pause", TgcControlBindings.Family.PAD, 0) == "Start"
+			and controls.slot_text(&"quick_load", TgcControlBindings.Family.KEYBOARD, 0) == "F9",
+			"Controls reads the project's inputs, and the session's own ones (F9)")
+
+	preview.screen = TgcMenuPreview.Screen.NOTIFICATION
+	await get_tree().process_frame
+	_expect(preview.session().toast().message() == "Sauvegarde rapide effectuée.", "a notification, which stays")
+
+	var tried := Theme.new()
+	preview.theme_override = tried
+	await get_tree().process_frame
+	_expect((preview.session().menu().get_node("%Frame") as Control).theme == tried, "a theme can be tried in place of the config's")
+
+	var changed := DEMO_CONFIG.duplicate(true) as TgcMenuConfig
+	var before := TgcMenuPreview.signature_of(changed)
+	changed.audio_channels[0].default_volume = 0.3
+	_expect(TgcMenuPreview.signature_of(changed) != before, "a change deep in the config changes its signature")
+	changed.show_sound_page = false
+	preview.config = changed
+	preview.screen = TgcMenuPreview.Screen.SETTINGS
+	await get_tree().process_frame
+	_expect(not preview.session().menu().page_ids().has(&"sound"), "and the preview follows the config")
+
+	preview.queue_free()
+	await get_tree().process_frame
+	_expect(InputMap.get_actions().size() == actions_before and InputMap.action_get_events(&"game_pause").size() == pause_before,
+			"the preview created no action and changed no input")
+	_expect(TranslationServer.get_locale() == locale_before and _fingerprint(DEMO_CONFIG.player_files()) == files,
+			"nor the language, nor a file of the player's")
 
 
 ## With no config at all, the session takes the add-on's default one: a working menu.

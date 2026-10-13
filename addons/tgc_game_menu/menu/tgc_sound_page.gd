@@ -1,3 +1,4 @@
+@tool
 class_name TgcSoundPage
 extends TgcMenuPage
 
@@ -31,6 +32,9 @@ func is_relevant() -> bool:
 
 
 func _ready() -> void:
+	# Opened alone in the editor, the page has no session: it stays as it is drawn.
+	if session == null:
+		return
 	for channel in settings.channels():
 		if _buses.has(channel.bus):
 			_add_row(channel)

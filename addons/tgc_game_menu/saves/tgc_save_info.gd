@@ -1,3 +1,4 @@
+@tool
 class_name TgcSaveInfo
 extends RefCounted
 

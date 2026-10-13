@@ -134,3 +134,4 @@ TGC_INPUT_WHEEL_LEFT,Wheel ←,Molette ←,Mausrad ←,Rueda ←
 TGC_INPUT_WHEEL_RIGHT,Wheel →,Molette →,Mausrad →,Rueda →
 TGC_INPUT_MOUSE_4,Button 4,Bouton 4,Maustaste 4,Botón 4
 TGC_INPUT_MOUSE_5,Button 5,Bouton 5,Maustaste 5,Botón 5
+TGC_PREVIEW_SUMMARY,Chapter %d,Chapitre %d,Kapitel %d,Capítulo %d

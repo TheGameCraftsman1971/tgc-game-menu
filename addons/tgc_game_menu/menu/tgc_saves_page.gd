@@ -1,3 +1,4 @@
+@tool
 class_name TgcSavesPage
 extends TgcMenuPage
 
@@ -39,11 +40,14 @@ func is_relevant() -> bool:
 
 
 func _ready() -> void:
+	# Opened alone in the editor, the page has no session: it stays as it is drawn.
+	if session == null:
+		return
 	_back.pressed.connect(closed.emit)
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready() and is_visible_in_tree():
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready() and session != null and is_visible_in_tree():
 		refresh()
 
 

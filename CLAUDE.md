@@ -82,6 +82,15 @@ What it has already decided here, and which must not be quietly undone:
   load asks too when the game is at risk: the modal is shown alone over the frozen game, and
   "Cancel" lets it go on (or goes back to the page, asked from the menu). `progress_at_risk` is the session's, kept from
   `_process`: a frame played since the last save is a frame "Main menu" would lose.
+- **Every script is a tool script, and inert in the editor.** That is what lets
+  `TgcMenuPreview` drive the real menu there. A session in a scene opened in the editor
+  returns at once from `_ready()`; the menu and the pages do nothing without a session (the
+  menu must not hide itself: that would be saved in the scene). A preview session
+  (`setup_preview()`) has settings at their defaults, controls read from the project settings
+  (`TgcControlBindings.preview()`, never the editor's InputMap), fake saves
+  (`TgcPreviewSaves`), refuses every real action, and speaks through a translation domain of
+  its own (`TgcI18n.open_preview_domain()`): nodes inherit it, and `TgcI18n.translate()`
+  follows it for the few texts translated outside a node.
 - **§11 — YAGNI.** Four built-in pages and an extension point (`TgcMenuPage`,
   `extra_pages`). A game-specific setting is the game's: its own Resource, its own page, its
   own file.
@@ -106,6 +115,7 @@ GODOT="/Applications/Godot v4.7.2.app/Contents/MacOS/Godot"
 | Run the demo | `"$GODOT" --path .` |
 | **Import, and check every script parses** (rebuilds the class cache and the catalogues) | `"$GODOT" --headless --path . --editor --quit-after 150` |
 | **The bench** — codec, remapping, damaged files, window sizes, catalogues, languages, then the demo mounted and played | `"$GODOT" --headless --path . res://tools/checks.tscn` |
+| **The editor's bench** (opens the editor): sessions inert in opened scenes, the preview in every screen and language, captures `captures/editor_*.png` | `TGC_EDITOR_CHECK=1 "$GODOT" --path . --editor` |
 | **Screenshots** of every page (opens a window), in `captures/` | `"$GODOT" --path . res://tools/capture.tscn --resolution 1600x900 -- en fr de es` |
 | **Copy the add-on into a project** (the template, a game) | `tools/install-into.sh <project folder>` |
 
@@ -128,6 +138,8 @@ chosen among `captures/`.
 | Default inputs read from the InputMap | "Reset" restores what an earlier instance remapped | read them from `ProjectSettings` (`input/<action>`); an undeclared action is snapshotted when the bindings are built |
 | A property set **after** `add_child` | `_ready()` has already read the player's files | set `TgcMenuSession.config` before `add_child` |
 | **A menu closed on a page** | the page stays marked visible, and shows through the next modal shown alone | `close()` puts the menu back to its root, every page hidden; the modal hides them all |
+| **A script that is not `@tool`, run in the editor** | "Attempt to call a method on a placeholder instance" | every add-on script is `@tool`; a game's page that is not is shown inert by the menu (`_inert_pages`) |
+| **The editor's first window after a headless import** | the preview's viewport photographs black | run the editor bench again; the checks hold either way |
 | A page built before `setup()` | `_ready()` finds no session | the menu calls `setup(session)` **before** adding the page; the session does the same for the menu |
 | The tree's root is pausable, but a bench parent may not be | a game under a `PROCESS_MODE_ALWAYS` bench node never pauses | the demo's `World` declares `process_mode = PAUSABLE` itself |
 | A lambda captures locals **by value** | a signal counter stays at zero, and the check passes | count in an array |
@@ -147,7 +159,7 @@ chosen among `captures/`.
 
 ## Where this stands
 
-Version **1.1.0** (saves) after **1.0.0**, the first: extracted, checked (bench: 198 checks), installed back into the
+Version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: extracted, checked (bench: 216 checks, editor bench: 9), installed back into the
 template (its own bench: 52 checks). The GitHub repository is private like the other add-ons.
 Not yet submitted to the Asset Store: making the repository public and filling in the store
 page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage

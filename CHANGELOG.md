@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0 — 2026-10-13
+
+- **A live preview of the menu in the editor**: `TgcMenuPreview`, with a config, a theme to
+  try, a screen (main menu, pause menu, Settings, a page, Save, Load, a confirmation, a
+  notification), a language, made-up saves and a background. A theme edit shows at once; a
+  config edit redraws it. It touches nothing: no file, no input action, no language but its
+  own translation domain.
+- Every script of the add-on is a tool script, and does nothing in the editor unless a preview
+  drives it. A game's page is drawn live if its script is a tool, as its scene draws it
+  otherwise.
+
 ## 1.1.0 — 2026-10-13
 
 - Saving and loading, off by default (`enable_saves`): **Save** and **Load** pages at the

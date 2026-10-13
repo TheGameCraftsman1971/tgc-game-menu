@@ -29,6 +29,8 @@ from a single resource.
   date and your summary, quick save and quick load on remappable shortcuts (F5, F9), a
   number of slots of each kind, optional *Delete*. **Your code does the saving**: the menu
   only calls it.
+- **A live preview in the editor** (`TgcMenuPreview`): any screen, any language, your
+  config and theme, redrawn as you edit them — without running the game.
 - **Your own pages** after the built-in ones, each with its button in the sub-menu.
 - **Settings saved at each change and read back without trusting the file**: wrong types,
   values off the list, unreadable inputs all fall back on the defaults instead of crashing.
@@ -144,6 +146,34 @@ _session.saves = MySaves.new(...)
 
 The demo's `demo/demo_saves.gd` is a complete provider: one small file per slot, read back
 without trusting it.
+
+## Preview in the editor
+
+Open `preview/tgc_menu_preview.tscn`, or better, add a **TgcMenuPreview** node to a scene of
+your own, and set in the Inspector:
+
+| Field | |
+| --- | --- |
+| `config` | Your `TgcMenuConfig` (empty: the add-on's default). |
+| `theme_override` | A theme to try instead of the config's. |
+| `screen` | Main menu, pause menu, Settings, one page (`page`: `general`, `display`, `sound`, `controls`, or yours), Save, Load, a confirmation, a notification. |
+| `locale` | The preview's language: any your game or the add-on speaks. |
+| `filled_slots` | How many made-up saves the Save and Load pages show. |
+| `background_color`, `background` | What lies behind the menu: a colour, or a screenshot of your game. |
+
+Edit the theme the menu uses — the config's, or your project's (`gui/theme/custom`) — and the
+preview follows at once; change the config or the screen and it redraws within half a second
+(the **Redraw** button forces it). Resize the node to see the menu at another resolution.
+
+**The preview touches nothing**: no file read or written, no input action created, neither
+the editor's language nor the game's changed (it speaks through a translation domain of its
+own). The saves it shows do not exist.
+
+Your own pages are drawn live if their script is a tool script (`@tool`, with a `_ready()`
+that does nothing harmful in the editor); otherwise they are shown as their scene draws
+them. The add-on's scripts are all tool scripts for this reason, and do nothing at all in the
+editor unless a preview drives them: a `TgcMenuSession` in a scene you open reads no file and
+touches nothing.
 
 ## Your game's help reads the Input Map
 

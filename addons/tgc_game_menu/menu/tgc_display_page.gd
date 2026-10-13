@@ -1,3 +1,4 @@
+@tool
 class_name TgcDisplayPage
 extends TgcMenuPage
 
@@ -41,6 +42,9 @@ func is_relevant() -> bool:
 
 
 func _ready() -> void:
+	# Opened alone in the editor, the page has no session: it stays as it is drawn.
+	if session == null:
+		return
 	var shown := _shown_rows()
 	for row: String in _rows():
 		var visible_row := shown.has(row)
@@ -71,7 +75,7 @@ func _ready() -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready() and settings != null:
 		_fill_fps()
 		_fps.select(settings.fps_limits.find(settings.max_fps))
 

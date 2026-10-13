@@ -1,9 +1,12 @@
+@tool
 class_name DemoGameplayPage
 extends TgcMenuPage
 
 ## A page of the game's own, after the add-on's: a scene whose root extends [TgcMenuPage],
 ## listed in [member TgcMenuConfig.extra_pages]. The game gives it its settings ([method
-## bind]) once the session is ready; the page shows them and changes them, nothing more.
+## bind]) once the session is ready; the page shows them and changes them, nothing more. It
+## is a tool script so that [TgcMenuPreview] can draw it live in the editor: without `@tool`,
+## the preview would show it as its scene draws it.
 
 var settings: DemoSettings
 

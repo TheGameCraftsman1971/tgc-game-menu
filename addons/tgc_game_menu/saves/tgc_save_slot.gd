@@ -1,3 +1,4 @@
+@tool
 class_name TgcSaveSlot
 extends RefCounted
 
@@ -33,7 +34,7 @@ func is_quick() -> bool:
 ## `quick_count`: how many quick slots there are; with one, it needs no number.
 func caption(quick_count := 1) -> String:
 	if kind == Kind.REGULAR:
-		return TranslationServer.translate("TGC_SLOT_N") % index
+		return TgcI18n.translate("TGC_SLOT_N") % index
 	if quick_count <= 1:
-		return String(TranslationServer.translate("TGC_QUICK_SLOT"))
-	return TranslationServer.translate("TGC_QUICK_SLOT_N") % index
+		return TgcI18n.translate("TGC_QUICK_SLOT")
+	return TgcI18n.translate("TGC_QUICK_SLOT_N") % index
