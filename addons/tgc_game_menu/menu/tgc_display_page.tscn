@@ -1,0 +1,144 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/tgc_game_menu/menu/tgc_display_page.gd" id="1_page"]
+
+[node name="TgcDisplayPage" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_page")
+page_id = &"display"
+title = "TGC_DISPLAY"
+
+[node name="Centre" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Centre"]
+layout_mode = 2
+
+[node name="Column" type="VBoxContainer" parent="Centre/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="Centre/Panel/Column"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "TGC_DISPLAY"
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="Centre/Panel/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 36
+theme_override_constants/v_separation = 14
+columns = 2
+
+[node name="ModeCaption" type="Label" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_WINDOW_MODE"
+
+[node name="Mode" type="OptionButton" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="WindowSizeCaption" type="Label" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_WINDOW_SIZE"
+
+[node name="WindowSize" type="OptionButton" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="VsyncCaption" type="Label" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_VSYNC"
+
+[node name="Vsync" type="CheckButton" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="FpsCaption" type="Label" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_MAX_FPS"
+
+[node name="Fps" type="OptionButton" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="RenderScaleRowCaption" type="Label" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_RENDER_SCALE"
+
+[node name="RenderScaleRow" type="HBoxContainer" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="RenderScale" type="HSlider" parent="Centre/Panel/Column/Grid/RenderScaleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="RenderScaleValue" type="Label" parent="Centre/Panel/Column/Grid/RenderScaleRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+auto_translate_mode = 2
+text = "100 %"
+horizontal_alignment = 2
+
+[node name="MsaaCaption" type="Label" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_MSAA"
+
+[node name="Msaa" type="OptionButton" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="UiScaleCaption" type="Label" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_UI_SCALE"
+
+[node name="UiScale" type="OptionButton" parent="Centre/Panel/Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Centre/Panel/Column"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Restore" type="Button" parent="Centre/Panel/Column/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_RESTORE"
+
+[node name="Back" type="Button" parent="Centre/Panel/Column/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_BACK"

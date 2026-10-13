@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="TgcMenuConfig" format=3]
+
+[ext_resource type="Script" path="res://addons/tgc_game_menu/tgc_audio_channel.gd" id="1_72rlp"]
+[ext_resource type="Script" path="res://addons/tgc_game_menu/tgc_remappable_action.gd" id="2_r3sox"]
+[ext_resource type="Script" path="res://addons/tgc_game_menu/tgc_menu_config.gd" id="3_8cyi6"]
+[ext_resource type="Theme" path="res://addons/tgc_game_menu/default_theme.tres" id="4_hjstf"]
+
+[sub_resource type="Resource" id="Resource_m83wb"]
+script = ExtResource("1_72rlp")
+
+[sub_resource type="Resource" id="Resource_j40jm"]
+script = ExtResource("1_72rlp")
+bus = &"Effects"
+label = "TGC_VOLUME_EFFECTS"
+
+[sub_resource type="Resource" id="Resource_2dqrx"]
+script = ExtResource("1_72rlp")
+bus = &"Music"
+label = "TGC_VOLUME_MUSIC"
+default_volume = 0.5
+
+[resource]
+script = ExtResource("3_8cyi6")
+theme = ExtResource("4_hjstf")
+languages = PackedStringArray()
+audio_channels = Array[ExtResource("1_72rlp")]([SubResource("Resource_m83wb"), SubResource("Resource_j40jm"), SubResource("Resource_2dqrx")])

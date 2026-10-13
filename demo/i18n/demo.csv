@@ -1,0 +1,9 @@
+keys,en,fr
+ACTION_MOVE_FORWARD,Move up,Monter
+ACTION_MOVE_BACK,Move down,Descendre
+ACTION_MOVE_LEFT,Move left,Aller à gauche
+ACTION_MOVE_RIGHT,Move right,Aller à droite
+ACTION_JUMP,Jump,Sauter
+DEMO_HELP,Move: %s · Jump: %s · Pause: %s,Se déplacer : %s · Sauter : %s · Pause : %s
+DEMO_GAMEPLAY,Gameplay,Partie
+DEMO_SHOW_HELP,On-screen help,Aide à l'écran

@@ -1,0 +1,105 @@
+keys,en,fr,de,es
+TGC_LANGUAGE_SELF,English,Français,Deutsch,Español
+TGC_PAUSE,Paused,Pause,Pause,Pausa
+TGC_PLAY,Play,Jouer,Spielen,Jugar
+TGC_NEW_GAME,New game,Nouvelle partie,Neues Spiel,Nueva partida
+TGC_RESUME,Resume,Reprendre,Fortsetzen,Continuar
+TGC_GENERAL,General,Général,Allgemein,General
+TGC_DISPLAY,Display,Affichage,Anzeige,Pantalla
+TGC_SOUND,Sound,Son,Ton,Sonido
+TGC_CONTROLS,Controls,Commandes,Steuerung,Controles
+TGC_MAIN_MENU,Main menu,Menu principal,Hauptmenü,Menú principal
+TGC_QUIT,Quit game,Quitter le jeu,Spiel beenden,Salir del juego
+TGC_RESTORE,Reset,Rétablir,Zurücksetzen,Restablecer
+TGC_BACK,Back,Retour,Zurück,Volver
+TGC_LANGUAGE,Language,Langue,Sprache,Idioma
+TGC_LANGUAGE_AUTO,System language,Celle du système,Systemsprache,Idioma del sistema
+TGC_VOLUME_MASTER,Master volume,Volume général,Gesamtlautstärke,Volumen general
+TGC_VOLUME_EFFECTS,Sound effects,Bruitages,Soundeffekte,Efectos de sonido
+TGC_VOLUME_MUSIC,Music,Musique,Musik,Música
+TGC_VOLUME_VOICE,Voices,Voix,Stimmen,Voces
+TGC_VOLUME_AMBIENCE,Ambience,Ambiance,Atmosphäre,Ambiente
+TGC_WINDOW_MODE,Window mode,Mode d'affichage,Fenstermodus,Modo de ventana
+TGC_WINDOW_SIZE,Window size,Taille de la fenêtre,Fenstergröße,Tamaño de la ventana
+TGC_VSYNC,Vertical sync,Synchronisation verticale,Vertikale Synchronisation,Sincronización vertical
+TGC_MAX_FPS,Frame rate limit,Images par seconde,Bildratenbegrenzung,Límite de fotogramas
+TGC_RENDER_SCALE,3D render scale,Échelle du rendu 3D,3D-Renderskalierung,Escala de renderizado 3D
+TGC_MSAA,Anti-aliasing,Anticrénelage,Kantenglättung,Antialiasing
+TGC_UI_SCALE,Interface size,Taille de l'interface,Größe der Oberfläche,Tamaño de la interfaz
+TGC_WINDOWED,Windowed,Fenêtré,Fenster,En ventana
+TGC_MAXIMIZED,Maximized,Fenêtré agrandi,Maximiert,Maximizada
+TGC_FULLSCREEN,Fullscreen,Plein écran,Vollbild,Pantalla completa
+TGC_MSAA_OFF,Off,Aucun,Aus,Desactivado
+TGC_FPS_UNLIMITED,Unlimited,Sans limite,Unbegrenzt,Sin límite
+TGC_FPS_N,%d fps,%d i/s,%d FPS,%d FPS
+TGC_CONTROLS_ACTION,Action,Action,Aktion,Acción
+TGC_CONTROLS_KEYBOARD,Keyboard and mouse,Clavier et souris,Tastatur und Maus,Teclado y ratón
+TGC_CONTROLS_PAD,Gamepad,Manette,Gamepad,Mando
+TGC_CONTROLS_RESTORE,Restore default controls,Rétablir les commandes d'origine,Standardsteuerung wiederherstellen,Restablecer los controles predeterminados
+TGC_CONTROLS_HINT_IDLE,"Pick a slot, then press the input you want.","Choisissez un emplacement, puis appuyez sur la commande voulue.",Wähle ein Feld und drücke dann die gewünschte Eingabe.,Elige una casilla y pulsa la entrada que quieras.
+TGC_CONTROLS_HINT_WAITING,Press the input you want · Esc: cancel · Delete: clear,Appuyez sur la commande voulue · Échap : renoncer · Suppr : effacer,Gewünschte Eingabe drücken · Esc: abbrechen · Entf: löschen,Pulsa la entrada que quieras · Esc: cancelar · Supr: borrar
+TGC_CONTROLS_PRESS,Press…,Appuyez…,Drücken…,Pulsa…
+TGC_CONTROLS_TIMEOUT,Timed out: nothing changed.,Délai écoulé : rien n'a changé.,Zeit abgelaufen: nichts geändert.,Tiempo agotado: no ha cambiado nada.
+TGC_CONTROLS_CANNOT,“%s” can't go there.,« %s » ne peut pas aller là.,„%s“ kann dort nicht hin.,«%s» no puede ir ahí.
+TGC_CONTROLS_LAST_KEY,“%s” is the last key of “%s”: it stays where it is.,« %s » est la dernière touche de « %s » : elle reste où elle est.,"„%s“ ist die letzte Taste von „%s“: Sie bleibt, wo sie ist.",«%s» es la última tecla de «%s»: se queda donde está.
+TGC_CONTROLS_TAKEN,“%s” was taken from “%s”.,« %s » a été repris à « %s ».,„%s“ wurde „%s“ entzogen.,«%s» se le ha quitado a «%s».
+TGC_CONTROLS_KEEPS_ONE,“%s” keeps at least one keyboard key.,« %s » garde au moins une touche au clavier.,„%s“ behält mindestens eine Taste auf der Tastatur.,«%s» conserva al menos una tecla del teclado.
+TGC_ACTION_PAUSE,Pause,Pause,Pause,Pausa
+TGC_INPUT_PAD_A,A / Cross,A / Croix,A / Kreuz,A / Cruz
+TGC_INPUT_PAD_B,B / Circle,B / Rond,B / Kreis,B / Círculo
+TGC_INPUT_PAD_X,X / Square,X / Carré,X / Quadrat,X / Cuadrado
+TGC_INPUT_PAD_Y,Y / Triangle,Y / Triangle,Y / Dreieck,Y / Triángulo
+TGC_INPUT_PAD_BACK,Select,Select,Select,Select
+TGC_INPUT_PAD_GUIDE,Guide,Guide,Guide,Guide
+TGC_INPUT_PAD_START,Start,Start,Start,Start
+TGC_INPUT_PAD_LEFT_STICK,Left stick (click),Stick gauche (clic),Linker Stick (Klick),Stick izquierdo (pulsar)
+TGC_INPUT_PAD_RIGHT_STICK,Right stick (click),Stick droit (clic),Rechter Stick (Klick),Stick derecho (pulsar)
+TGC_INPUT_PAD_LB,LB / L1,LB / L1,LB / L1,LB / L1
+TGC_INPUT_PAD_RB,RB / R1,RB / R1,RB / R1,RB / R1
+TGC_INPUT_PAD_LT,LT / L2,LT / L2,LT / L2,LT / L2
+TGC_INPUT_PAD_RT,RT / R2,RT / R2,RT / R2,RT / R2
+TGC_INPUT_PAD_DPAD_UP,D-pad ↑,Croix ↑,Steuerkreuz ↑,Cruceta ↑
+TGC_INPUT_PAD_DPAD_DOWN,D-pad ↓,Croix ↓,Steuerkreuz ↓,Cruceta ↓
+TGC_INPUT_PAD_DPAD_LEFT,D-pad ←,Croix ←,Steuerkreuz ←,Cruceta ←
+TGC_INPUT_PAD_DPAD_RIGHT,D-pad →,Croix →,Steuerkreuz →,Cruceta →
+TGC_INPUT_AXIS_LEFT_X_NEG,Left stick ←,Stick gauche ←,Linker Stick ←,Stick izquierdo ←
+TGC_INPUT_AXIS_LEFT_X_POS,Left stick →,Stick gauche →,Linker Stick →,Stick izquierdo →
+TGC_INPUT_AXIS_LEFT_Y_NEG,Left stick ↑,Stick gauche ↑,Linker Stick ↑,Stick izquierdo ↑
+TGC_INPUT_AXIS_LEFT_Y_POS,Left stick ↓,Stick gauche ↓,Linker Stick ↓,Stick izquierdo ↓
+TGC_INPUT_AXIS_RIGHT_X_NEG,Right stick ←,Stick droit ←,Rechter Stick ←,Stick derecho ←
+TGC_INPUT_AXIS_RIGHT_X_POS,Right stick →,Stick droit →,Rechter Stick →,Stick derecho →
+TGC_INPUT_AXIS_RIGHT_Y_NEG,Right stick ↑,Stick droit ↑,Rechter Stick ↑,Stick derecho ↑
+TGC_INPUT_AXIS_RIGHT_Y_POS,Right stick ↓,Stick droit ↓,Rechter Stick ↓,Stick derecho ↓
+TGC_INPUT_KEY_ESCAPE,Esc,Échap,Esc,Esc
+TGC_INPUT_KEY_SPACE,Space,Espace,Leertaste,Espacio
+TGC_INPUT_KEY_ENTER,Enter,Entrée,Eingabe,Intro
+TGC_INPUT_KEY_KP_ENTER,Enter (keypad),Entrée (pavé),Eingabe (Ziffernblock),Intro (teclado numérico)
+TGC_INPUT_KEY_TAB,Tab,Tab,Tab,Tab
+TGC_INPUT_KEY_BACKSPACE,Backspace,Retour arrière,Rücktaste,Retroceso
+TGC_INPUT_KEY_DELETE,Delete,Suppr,Entf,Supr
+TGC_INPUT_KEY_INSERT,Insert,Inser,Einfg,Insert
+TGC_INPUT_KEY_HOME,Home,Début,Pos1,Inicio
+TGC_INPUT_KEY_END,End,Fin,Ende,Fin
+TGC_INPUT_KEY_PAGEUP,Page ↑,Page ↑,Bild ↑,Re Pág
+TGC_INPUT_KEY_PAGEDOWN,Page ↓,Page ↓,Bild ↓,Av Pág
+TGC_INPUT_KEY_UP,↑,↑,↑,↑
+TGC_INPUT_KEY_DOWN,↓,↓,↓,↓
+TGC_INPUT_KEY_LEFT,←,←,←,←
+TGC_INPUT_KEY_RIGHT,→,→,→,→
+TGC_INPUT_KEY_SHIFT,Shift,Maj,Umschalt,Mayús
+TGC_INPUT_KEY_CTRL,Ctrl,Ctrl,Strg,Ctrl
+TGC_INPUT_KEY_ALT,Alt,Alt,Alt,Alt
+TGC_INPUT_KEY_OPTION,Option,Option,Wahltaste,Opción
+TGC_INPUT_KEY_CMD,Cmd,Cmd,Cmd,Cmd
+TGC_INPUT_KEY_WIN,Win,Win,Win,Win
+TGC_INPUT_KEY_SUPER,Super,Super,Super,Super
+TGC_INPUT_KEY_CAPSLOCK,Caps Lock,Verr. maj,Feststelltaste,Bloq Mayús
+TGC_INPUT_MOUSE_LEFT,Left click,Clic gauche,Linksklick,Clic izquierdo
+TGC_INPUT_MOUSE_RIGHT,Right click,Clic droit,Rechtsklick,Clic derecho
+TGC_INPUT_MOUSE_MIDDLE,Middle click,Clic molette,Mittelklick,Clic central
+TGC_INPUT_WHEEL_UP,Wheel ↑,Molette ↑,Mausrad ↑,Rueda ↑
+TGC_INPUT_WHEEL_DOWN,Wheel ↓,Molette ↓,Mausrad ↓,Rueda ↓
+TGC_INPUT_WHEEL_LEFT,Wheel ←,Molette ←,Mausrad ←,Rueda ←
+TGC_INPUT_WHEEL_RIGHT,Wheel →,Molette →,Mausrad →,Rueda →
+TGC_INPUT_MOUSE_4,Button 4,Bouton 4,Maustaste 4,Botón 4
+TGC_INPUT_MOUSE_5,Button 5,Bouton 5,Maustaste 5,Botón 5

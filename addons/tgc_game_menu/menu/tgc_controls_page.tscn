@@ -1,0 +1,100 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/tgc_game_menu/menu/tgc_controls_page.gd" id="1_page"]
+
+[node name="TgcControlsPage" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_page")
+page_id = &"controls"
+title = "TGC_CONTROLS"
+
+[node name="Centre" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Centre"]
+layout_mode = 2
+
+[node name="Column" type="VBoxContainer" parent="Centre/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Centre/Panel/Column"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "TGC_CONTROLS"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="Centre/Panel/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+auto_translate_mode = 2
+text = "TGC_CONTROLS_HINT_IDLE"
+horizontal_alignment = 1
+
+[node name="Header" type="HBoxContainer" parent="Centre/Panel/Column"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ActionHeader" type="Label" parent="Centre/Panel/Column/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SectionLabel"
+text = "TGC_CONTROLS_ACTION"
+
+[node name="KeyboardHeader" type="Label" parent="Centre/Panel/Column/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(392, 0)
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "TGC_CONTROLS_KEYBOARD"
+horizontal_alignment = 1
+
+[node name="PadHeader" type="Label" parent="Centre/Panel/Column/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(392, 0)
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "TGC_CONTROLS_PAD"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Centre/Panel/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Grid" type="GridContainer" parent="Centre/Panel/Column/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 8
+columns = 5
+
+[node name="Buttons" type="HBoxContainer" parent="Centre/Panel/Column"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Restore" type="Button" parent="Centre/Panel/Column/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_CONTROLS_RESTORE"
+
+[node name="Back" type="Button" parent="Centre/Panel/Column/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TGC_BACK"

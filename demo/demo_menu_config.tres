@@ -1,0 +1,62 @@
+[gd_resource type="Resource" script_class="TgcMenuConfig" format=3]
+
+[ext_resource type="Script" path="res://addons/tgc_game_menu/tgc_audio_channel.gd" id="1_avedi"]
+[ext_resource type="PackedScene" path="res://demo/demo_gameplay_page.tscn" id="2_dboga"]
+[ext_resource type="Script" path="res://addons/tgc_game_menu/tgc_remappable_action.gd" id="3_0hs6g"]
+[ext_resource type="Script" path="res://addons/tgc_game_menu/tgc_menu_config.gd" id="4_kpdkl"]
+[ext_resource type="Theme" path="res://addons/tgc_game_menu/default_theme.tres" id="5_hjs0b"]
+
+[sub_resource type="Resource" id="Resource_m7ul1"]
+script = ExtResource("1_avedi")
+
+[sub_resource type="Resource" id="Resource_d1u3k"]
+script = ExtResource("1_avedi")
+bus = &"Effects"
+label = "TGC_VOLUME_EFFECTS"
+
+[sub_resource type="Resource" id="Resource_jyhl3"]
+script = ExtResource("1_avedi")
+bus = &"Music"
+label = "TGC_VOLUME_MUSIC"
+default_volume = 0.5
+
+[sub_resource type="Resource" id="Resource_7lil3"]
+script = ExtResource("3_0hs6g")
+action = &"move_forward"
+label = "ACTION_MOVE_FORWARD"
+
+[sub_resource type="Resource" id="Resource_2ykh7"]
+script = ExtResource("3_0hs6g")
+action = &"move_back"
+label = "ACTION_MOVE_BACK"
+
+[sub_resource type="Resource" id="Resource_6d3fq"]
+script = ExtResource("3_0hs6g")
+action = &"move_left"
+label = "ACTION_MOVE_LEFT"
+
+[sub_resource type="Resource" id="Resource_tgjra"]
+script = ExtResource("3_0hs6g")
+action = &"move_right"
+label = "ACTION_MOVE_RIGHT"
+
+[sub_resource type="Resource" id="Resource_qnsqj"]
+script = ExtResource("3_0hs6g")
+action = &"action_primary"
+label = "ACTION_JUMP"
+
+[sub_resource type="Resource" id="Resource_tjfys"]
+script = ExtResource("3_0hs6g")
+action = &"game_pause"
+label = "TGC_ACTION_PAUSE"
+essential = true
+
+[resource]
+script = ExtResource("4_kpdkl")
+theme = ExtResource("5_hjs0b")
+extra_pages = Array[PackedScene]([ExtResource("2_dboga")])
+languages = PackedStringArray()
+show_render_scale = false
+show_msaa = false
+audio_channels = Array[ExtResource("1_avedi")]([SubResource("Resource_m7ul1"), SubResource("Resource_d1u3k"), SubResource("Resource_jyhl3")])
+remappable_actions = Array[ExtResource("3_0hs6g")]([SubResource("Resource_7lil3"), SubResource("Resource_2ykh7"), SubResource("Resource_6d3fq"), SubResource("Resource_tgjra"), SubResource("Resource_qnsqj"), SubResource("Resource_tjfys")])
