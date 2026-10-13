@@ -59,7 +59,7 @@ tag in the other number (`menus`, `setting`…), take the existing one.
 **AI usage disclosure**
 
 ```text
-This add-on was developed with substantial help from Claude, an AI model by Anthropic. Most of the GDScript code, the automated checks, the documentation and the German and Spanish translations were written by the AI, under the author's direction and decisions. The author tested the result in Godot 4.7.2; the add-on's own test suite (220 automated checks, plus checks run inside the editor) passes. The icon and the thumbnail are drawn by code; the screenshots are captures of the menu itself. No AI-generated image, sound or 3D model is included.
+This add-on was developed with substantial help from Claude, an AI model by Anthropic. Most of the GDScript code, the automated checks, the documentation and the translations (French, German, Spanish) were written by the AI, under the author's direction and decisions. The author tested the result in Godot 4.7.2; the add-on's own test suite (220 automated checks, plus checks run inside the editor) passes. The icon and the thumbnail are drawn by code; the screenshots are captures of the menu itself. No AI-generated image, sound or 3D model is included.
 ```
 
 ## Media
