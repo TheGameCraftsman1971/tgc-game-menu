@@ -544,6 +544,21 @@ func _check_confirmations() -> void:
 	session.game_started.connect(func() -> void: started[0] += 1)
 
 	_expect(not session.needs_confirmation(), "on the main menu, there is nothing to lose")
+	var loss: Label = menu.get_node("%Loss")
+	quit.pressed.emit()
+	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_QUIT" and accept.text == "TGC_QUIT",
+			"yet \"Quit\" asks, even without a game")
+	_expect(not loss.visible, "without saying anything would be lost")
+	cancel.pressed.emit()
+	_expect(not menu.is_confirming() and focus.call() == quit, "and \"Cancel\" gives the focus back")
+	# The session's quit would end the bench: the request is counted instead.
+	menu.quit_requested.disconnect(session.quit)
+	var quits := [0]
+	menu.quit_requested.connect(func() -> void: quits[0] += 1)
+	session.config.confirm_quit = false
+	quit.pressed.emit()
+	_expect(quits[0] == 1 and not menu.is_confirming(), "with confirm_quit off, it quits at once from the main menu")
+	session.config.confirm_quit = true
 	play.pressed.emit()
 	_expect(session.is_in_game() and not menu.is_confirming(), "so \"Play\" starts at once")
 	session.pause()
@@ -575,7 +590,8 @@ func _check_confirmations() -> void:
 
 	session.pause()
 	quit.pressed.emit()
-	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_QUIT", "\"Quit\" asks too")
+	_expect(menu.is_confirming() and question.text == "TGC_CONFIRM_QUIT" and loss.visible,
+			"during a game, \"Quit\" asks, saying what would be lost")
 	cancel.pressed.emit()
 	_expect(not menu.is_confirming() and session.is_in_game() and focus.call() == quit,
 			"\"Cancel\" gives up, and the game is still there")

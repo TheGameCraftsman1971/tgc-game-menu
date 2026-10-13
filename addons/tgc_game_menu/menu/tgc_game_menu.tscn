@@ -164,6 +164,7 @@ horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="Loss" type="Label" parent="Frame/Confirm/Centre/Panel/Column"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "TGC_CONFIRM_LOSS"
 horizontal_alignment = 1

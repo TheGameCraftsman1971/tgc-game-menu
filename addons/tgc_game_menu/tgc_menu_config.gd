@@ -31,6 +31,9 @@ const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 ## in progress ([member TgcMenuSession.progress_at_risk]). Off for a game that saves all the
 ## time, where leaving loses nothing.
 @export var confirm_progress_loss := true
+## "Quit" always asks, even from the main menu with no game in progress: a program that
+## closes on a stray click or button is a lost moment too.
+@export var confirm_quit := true
 ## The action that opens the pause menu and closes it again. If the project does not
 ## declare it, the session creates it at run time with Esc and Start.
 @export var pause_action: StringName = &"game_pause"

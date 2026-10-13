@@ -22,7 +22,8 @@ from a single resource.
   named as they are **engraved** on the player's keyboard (Z on an AZERTY for the W
   position), gamepad buttons for both families of pads ("A / Cross").
 - **Confirmation before losing a game.** During a game, *New game*, *Main menu* and *Quit*
-  first ask, in a modal whose focus starts on *Cancel* and cannot wander off. A game that
+  first ask, in a modal whose focus starts on *Cancel* and cannot wander off. *Quit* asks
+  from the main menu too. A game that
   has just saved can say there is nothing to lose (`progress_at_risk = false`).
 - **Your own pages** after the built-in ones, each with its button in the sub-menu.
 - **Settings saved at each change and read back without trusting the file**: wrong types,
@@ -72,6 +73,7 @@ the Inspector, and assign it to the session's `config`. Everything has a working
 | | `pause_on_focus_loss` | Pause when the window loses the focus during a game. |
 | | `hide_quit_on_web` | Hide *Quit* in a web build. |
 | | `confirm_progress_loss` | Ask before *New game*, *Main menu* and *Quit* abandon a game in progress. Off for a game that saves all the time. |
+| | `confirm_quit` | *Quit* asks even from the main menu, with no game in progress. |
 | | `pause_action` | The action that opens and closes the pause menu (`game_pause`). |
 | | `theme` | The menu's theme. Empty: your project's theme. |
 | | `menu_scene` | Your own copy of `menu/tgc_game_menu.tscn`, to restyle the root. |

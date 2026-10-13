@@ -40,6 +40,10 @@ func _ready() -> void:
 		session.general.locale = locale
 		await _wait(0.3)
 		await _shot("%s_01_main_menu" % locale)
+		(menu.get_node("%Quit") as Button).pressed.emit()
+		await _wait(0.2)
+		await _shot("%s_01b_quit" % locale)
+		(menu.get_node("%Cancel") as Button).pressed.emit()
 		menu.show_page(TgcGameMenu.SETTINGS)
 		await _wait(0.2)
 		await _shot("%s_02_settings" % locale)

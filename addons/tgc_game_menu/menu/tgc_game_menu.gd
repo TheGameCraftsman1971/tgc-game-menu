@@ -32,7 +32,8 @@ extends CanvasLayer
 ## The focus starts on "Cancel" — a press too many on a gamepad must not cost a game — and
 ## cannot leave the modal; the pointer cannot reach what lies under it. "Cancel", Esc, B or
 ## the pause gesture close it ([method back]) and give the focus back to the button that
-## opened it. Without a game, the three buttons act at once: there is nothing to lose.
+## opened it. Without a game, "Play" acts at once: there is nothing to lose. "Quit" still
+## asks ([member TgcMenuConfig.confirm_quit]), without the line about what would be lost.
 ##
 ## A game that wants another look duplicates `tgc_game_menu.tscn`, keeps its unique names
 ## (`%Title`, `%Resume`, `%Play`, `%OpenSettings`, `%MainMenu`, `%Quit`, `%Settings`,
@@ -63,6 +64,7 @@ const SETTINGS := &"settings"
 @onready var _pages_holder: Control = %Pages
 @onready var _confirm_layer: Control = %Confirm
 @onready var _question: Label = %Question
+@onready var _loss: Label = %Loss
 @onready var _cancel: Button = %Cancel
 @onready var _confirm_action: Button = %ConfirmAction
 
@@ -86,7 +88,7 @@ func _ready() -> void:
 	_resume.pressed.connect(resume_requested.emit)
 	_play.pressed.connect(_ask.bind(play_requested, "TGC_CONFIRM_NEW_GAME", "TGC_NEW_GAME", _play))
 	_main_menu.pressed.connect(_ask.bind(main_menu_requested, "TGC_CONFIRM_MAIN_MENU", "TGC_MAIN_MENU", _main_menu))
-	_quit.pressed.connect(_ask.bind(quit_requested, "TGC_CONFIRM_QUIT", "TGC_QUIT", _quit))
+	_quit.pressed.connect(_ask_quit)
 	_cancel.pressed.connect(_dismiss)
 	_confirm_action.pressed.connect(_accept)
 	_trap_focus()
@@ -196,17 +198,25 @@ func show_page(target: StringName) -> void:
 
 ## Does what a button asks, or first asks the player when it would lose the game in
 ## progress.
-func _ask(action: Signal, question: String, label: String, asker: Button) -> void:
-	if _session == null or not _session.needs_confirmation():
+## `always`: ask even when no progress is at risk.
+func _ask(action: Signal, question: String, label: String, asker: Button, always := false) -> void:
+	var at_risk := _session != null and _session.needs_confirmation()
+	if not at_risk and not always:
 		action.emit()
 		return
 	_pending = action
 	_asker = asker
 	_question.text = question
+	_loss.visible = at_risk
 	_confirm_action.text = label
 	_root.visible = false
 	_confirm_layer.visible = true
 	_cancel.grab_focus()
+
+
+func _ask_quit() -> void:
+	var always := _session != null and _session.config.confirm_quit
+	_ask(quit_requested, "TGC_CONFIRM_QUIT", "TGC_QUIT", _quit, always)
 
 
 func _accept() -> void:

@@ -71,7 +71,8 @@ What it has already decided here, and which must not be quietly undone:
   place. `TgcGameMenu.SETTINGS` is a reserved page id.
 - **Nothing abandons a game without asking.** "New game", "Main menu" and "Quit" open a modal
   while `session.needs_confirmation()` (a game, its progress at risk, the config allowing
-  it). The focus starts on "Cancel" and is trapped; the root is hidden meanwhile, because a
+  it); "Quit" also asks with no game at all (`confirm_quit`), without the line about a loss.
+  The focus starts on "Cancel" and is trapped; the root is hidden meanwhile, because a
   theme's panels may be translucent. The modal is the menu's own, not a `ConfirmationDialog`:
   a separate window would not follow the menu's theme, scale nor focus rules.
 - **§11 — YAGNI.** Four built-in pages and an extension point (`TgcMenuPage`,
@@ -138,8 +139,8 @@ chosen among `captures/`.
 
 ## Where this stands
 
-Version **1.0.0**, the first: extracted, checked (bench: 155 checks), installed back into the
-template (its own bench: 51 checks). The GitHub repository is private like the other add-ons.
+Version **1.0.0**, the first: extracted, checked (bench: 159 checks), installed back into the
+template (its own bench: 52 checks). The GitHub repository is private like the other add-ons.
 Not yet submitted to the Asset Store: making the repository public and filling in the store
 page (`README.md`, `screenshots/`, `screenshots/store_icon.png`, the mandatory AI-usage
 disclosure) is the author's call. The French translation of the user documentation is to be
