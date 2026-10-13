@@ -1,0 +1,35 @@
+# Godot's cache and generated data
+.godot/
+/android/
+
+# Translations compiled from the CSV catalogues (Godot regenerates them on import)
+*.translation
+
+# Images produced by the capture tool (tools/capture.tscn): products. The folder's
+# `.gdignore` is versioned — without it Godot would import every PNG as a texture.
+/captures/*
+!/captures/.gdignore
+
+# Exports
+/build/
+/export/
+/__Exports__/
+export_presets.cfg
+
+# Knowledge graph (graphify skill): a product, rebuilt by /graphify .
+/graphify-out/
+
+# Local Claude Code settings
+.claude/
+
+# Third-party editors
+.idea/
+.vscode/
+
+# System
+.DS_Store
+*.tmp
+
+# Internal reference document: authoritative on this repository's architecture, but not
+# ours to publish. It lives on the machine, beside each project it governs.
+/BONNES-PRATIQUES-GODOT4-SOLID.md
