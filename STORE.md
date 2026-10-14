@@ -54,7 +54,7 @@ tag in the other number (`menus`, `setting`…), take the existing one.
 | --- | --- |
 | Asset type | Addon |
 | License | MIT |
-| Link to source code | `https://github.com/ulric-soft-connect-be/tgc-game-menu` |
+| Link to source code | `https://github.com/TheGameCraftsman1971/tgc-game-menu` |
 
 **AI usage disclosure**
 
@@ -68,7 +68,7 @@ This add-on was developed with substantial help from Claude, an AI model by Anth
 | --- | --- |
 | Thumbnail (16:9) | `screenshots/store_thumbnail.png`, made by `tools/store_thumbnail.tscn` |
 | Screenshots, in this order | `en_01_main_menu`, `en_02_settings`, `en_04_display`, `en_06_controls`, `en_11_editor_preview`, `en_09_pause`, `en_10_confirm`, `en_09_load`, `fr_09_save` (`.png`, in `screenshots/`) |
-| Icon, if a link is asked | `https://raw.githubusercontent.com/ulric-soft-connect-be/tgc-game-menu/main/screenshots/store_icon.png` |
+| Icon, if a link is asked | `https://raw.githubusercontent.com/TheGameCraftsman1971/tgc-game-menu/main/screenshots/store_icon.png` |
 
 ## Versions
 
