@@ -74,7 +74,7 @@ This add-on was developed with substantial help from Claude, an AI model by Anth
 
 | Field | Value |
 | --- | --- |
-| File | `tgc_game_menu-1.2.0.zip`, from the GitHub release `v1.2.0` (only `addons/tgc_game_menu/`) |
+| File | `build/tgc_game_menu-1.2.0.zip` (only `addons/tgc_game_menu/`, at the zip's root: Godot 4.7's installer keeps an `addons/` root), the same as the GitHub release's |
 | Name | `1.2.0` |
 | Minimum Godot version | 4.7 |
 | Maximum Godot version | — |

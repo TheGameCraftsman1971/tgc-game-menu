@@ -120,6 +120,7 @@ GODOT="/Applications/Godot v4.7.2.app/Contents/MacOS/Godot"
 | **The editor's bench** (opens the editor): sessions inert in opened scenes, the preview in every screen and language, captures `captures/editor_*.png` | `TGC_EDITOR_CHECK=1 "$GODOT" --path . --editor` |
 | **Screenshots** of every page (opens a window), in `captures/` | `"$GODOT" --path . res://tools/capture.tscn --resolution 1600x900 -- en fr de es` |
 | **The store's thumbnail** (16:9, opens a window), `captures/store_thumbnail.png` | `"$GODOT" --path . res://tools/store_thumbnail.tscn` |
+| **The store's zip**: `addons/` alone (`.gitattributes`), at the zip's root, in the ignored `build/` | `git archive --format=zip -9 -o build/tgc_game_menu-<version>.zip HEAD` |
 | **Copy the add-on into a project** (the template, a game) | `tools/install-into.sh <project folder>` |
 
 The bench exits non-zero on failure, and also fails on a script error raised along the way
