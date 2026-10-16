@@ -2,12 +2,14 @@ extends Node
 
 ## The Asset Store's thumbnail, 16:9 as the store requires: the add-on's icon, its name, what
 ## it does, and the real menu beside them, drawn by a [TgcMenuPreview] on the demo's config.
+## With `-- title`, the store's second picture instead: the icon and the name alone, centred.
 ##
 ##   godot --path . res://tools/store_thumbnail.tscn
+##   godot --path . res://tools/store_thumbnail.tscn -- title
 ##
 ## It opens a window (drawing needs the graphics card) and writes
-## `captures/store_thumbnail.png`, 1920 × 1080 whatever the screen's density: the picture is
-## drawn in a viewport of that size. Copy it into `screenshots/`.
+## `captures/store_thumbnail.png` (or `captures/store_title.png`), 1920 × 1080 whatever the
+## screen's density: the picture is drawn in a viewport of that size. Copy it into `screenshots/`.
 
 const SIZE := Vector2i(1920, 1080)
 const ICON := "res://screenshots/store_icon.svg"
@@ -34,6 +36,23 @@ func _ready() -> void:
 	background.size = SIZE
 	root.add_child(background)
 
+	var file := "store_thumbnail"
+	if "title" in OS.get_cmdline_user_args():
+		file = "store_title"
+		_draw_title(root)
+	else:
+		_draw_thumbnail(root)
+
+	for i in 30:
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	DirAccess.make_dir_recursive_absolute("res://captures")
+	viewport.get_texture().get_image().save_png("res://captures/%s.png" % file)
+	print("saved res://captures/%s.png" % file)
+	get_tree().quit()
+
+
+func _draw_thumbnail(root: Control) -> void:
 	var column := VBoxContainer.new()
 	column.position = Vector2(100, 0)
 	column.size = Vector2(740, SIZE.y)
@@ -68,13 +87,20 @@ func _ready() -> void:
 	preview.size = Vector2(900, 520)
 	frame.add_child(preview)
 
-	for i in 30:
-		await get_tree().process_frame
-	await RenderingServer.frame_post_draw
-	DirAccess.make_dir_recursive_absolute("res://captures")
-	viewport.get_texture().get_image().save_png("res://captures/store_thumbnail.png")
-	print("saved res://captures/store_thumbnail.png")
-	get_tree().quit()
+
+func _draw_title(root: Control) -> void:
+	var column := VBoxContainer.new()
+	column.size = SIZE
+	column.alignment = BoxContainer.ALIGNMENT_CENTER
+	column.add_theme_constant_override("separation", 56)
+	root.add_child(column)
+	var icon := TextureRect.new()
+	icon.texture = _svg(ICON, 2.0)
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	column.add_child(icon)
+	var name_label := _label("TGC Game Menu", 120, TEXT)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(name_label)
 
 
 func _label(text: String, size: int, color: Color) -> Label:
