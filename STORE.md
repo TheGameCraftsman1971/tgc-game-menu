@@ -67,7 +67,7 @@ This add-on was developed with substantial help from Claude, an AI model by Anth
 | Field | File |
 | --- | --- |
 | Thumbnail (16:9) | `screenshots/store_thumbnail.png`, made by `tools/store_thumbnail.tscn` |
-| Screenshots, in this order | `en_01_main_menu`, `en_02_settings`, `en_04_display`, `en_06_controls`, `en_11_editor_preview`, `en_09_pause`, `en_10_confirm`, `en_09_load`, `fr_09_save` (`.png`, in `screenshots/`) |
+| Screenshots, in this order | `store_thumbnail` again (the carousel's first picture), `store_title` (the icon and the name alone, as the reviewer suggested; `tools/store_thumbnail.tscn -- title`), `en_01_main_menu`, `en_02_settings`, `en_04_display`, `en_06_controls`, `en_11_editor_preview`, `en_09_pause`, `en_10_confirm`, `en_09_load`, `fr_09_save` (`.png`, in `screenshots/`) |
 | Icon, if a link is asked | `https://raw.githubusercontent.com/TheGameCraftsman1971/tgc-game-menu/main/screenshots/store_icon.png` |
 
 ## Versions
