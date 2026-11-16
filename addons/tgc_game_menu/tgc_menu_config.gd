@@ -17,6 +17,12 @@ const _DISPLAY_PAGE := "res://addons/tgc_game_menu/menu/tgc_display_page.tscn"
 const _SOUND_PAGE := "res://addons/tgc_game_menu/menu/tgc_sound_page.tscn"
 const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 
+## What the menu calls the program when it offers to quit it.
+enum Wording {
+	GAME,
+	APPLICATION,
+}
+
 @export_group("Menu")
 ## The title of the main menu: a translation key, or plain text. Empty: the project's name
 ## ([code]application/config/name[/code]).
@@ -33,6 +39,9 @@ const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 ## "Main menu" in the pause menu. Off for a program that never shows a main menu
 ## ([member start_on_main_menu] off), where it would lead nowhere useful.
 @export var show_main_menu_button := true
+## How "Quit" speaks: of the game ("Quit game", "Quit the game?") or of an application
+## ("Quit", "Quit?").
+@export var wording := Wording.GAME
 ## A game in progress pauses itself when the window loses the focus.
 @export var pause_on_focus_loss := true
 ## "Quit" is hidden in a web build, where it would close nothing.

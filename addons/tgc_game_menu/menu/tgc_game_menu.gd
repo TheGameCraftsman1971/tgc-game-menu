@@ -136,6 +136,7 @@ func _ready() -> void:
 	_home_title = config.title if config.title != "" \
 			else String(ProjectSettings.get_setting("application/config/name", ""))
 	_quit.visible = not (config.hide_quit_on_web and OS.has_feature("web"))
+	_quit.text = "TGC_QUIT_APP" if config.wording == TgcMenuConfig.Wording.APPLICATION else "TGC_QUIT"
 	for scene in config.page_scenes():
 		_add_page(scene)
 	_open_settings.visible = not _pages.is_empty()
@@ -293,7 +294,9 @@ func _ask(action: Signal, question: String, label: String, asker: Button, always
 
 func _ask_quit() -> void:
 	var always := _session != null and _session.config.confirm_quit
-	_ask(quit_requested, "TGC_CONFIRM_QUIT", "TGC_QUIT", _quit, always)
+	var application := _session != null and _session.config.wording == TgcMenuConfig.Wording.APPLICATION
+	_ask(quit_requested, "TGC_CONFIRM_QUIT_APP" if application else "TGC_CONFIRM_QUIT",
+			"TGC_QUIT_APP" if application else "TGC_QUIT", _quit, always)
 
 
 func _accept() -> void:

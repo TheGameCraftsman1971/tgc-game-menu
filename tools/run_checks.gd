@@ -942,4 +942,17 @@ func _check_no_main_menu() -> void:
 			and (app_menu.get_node("%Quit") as Button).visible, "and keeps \"Resume\", \"Settings\" and \"Quit\"")
 	_expect((app_menu.get_node("%Title") as Label).text == "MY_APP", "its pause menu bears its own title")
 	_expect(get_viewport().gui_get_focus_owner() == app_menu.get_node("%Resume"), "the focus starts on \"Resume\"")
+	_expect((app_menu.get_node("%Quit") as Button).text == "TGC_QUIT", "it still says \"Quit game\" by default")
+	await _unmount(app)
+	app_config.wording = TgcMenuConfig.Wording.APPLICATION
+	app = _mount(app_config)
+	await get_tree().process_frame
+	app.session().pause()
+	app_menu = app.session().menu()
+	var quit := app_menu.get_node("%Quit") as Button
+	_expect(quit.text == "TGC_QUIT_APP", "worded as an application, it says \"Quit\"")
+	quit.pressed.emit()
+	_expect(app_menu.is_confirming() and (app_menu.get_node("%Question") as Label).text == "TGC_CONFIRM_QUIT_APP"
+			and (app_menu.get_node("%ConfirmAction") as Button).text == "TGC_QUIT_APP", "and asks \"Quit?\"")
+	(app_menu.get_node("%Cancel") as Button).pressed.emit()
 	await _unmount(app)

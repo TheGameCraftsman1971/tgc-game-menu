@@ -6,7 +6,8 @@
   title of its own (the application's name, for a menu behind a button), `show_new_game`
   and `show_main_menu_button` hide *New game* and *Main menu*. With `start_on_main_menu`
   off, a metronome, a tool or an editor opens straight on its screen, and its menu keeps
-  only *Resume*, *Settings* and *Quit*. The defaults change nothing.
+  only *Resume*, *Settings* and *Quit*. `wording` set to `APPLICATION` makes *Quit game*
+  say *Quit*, and its question *Quit?*, in the four languages. The defaults change nothing.
 
 ## 1.2.0 — 2026-10-13
 
