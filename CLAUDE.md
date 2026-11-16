@@ -167,7 +167,12 @@ on a high-density screen the window, and so the captures, are larger than `--res
 
 ## Where this stands
 
-Version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
+**1.3.0, unreleased** (a pause menu for applications, the drop-down menu): merged into
+`main` on 2026-11-16, checked (bench: 241 checks, editor bench: 13), installed into the
+template (its bench: 52 checks) and into GrooveCraft. Still to do before tagging it: the
+version in `plugin.cfg`, the French documentation, new store screenshots.
+
+Before it, version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
 merged into `main`, tagged `v1.2.0` with a GitHub release, checked (bench: 220 checks, editor
 bench: 13), installed back into the template (its own bench: 52 checks), documentation in
 English and French. The repository is public; the store form, field by field, is in
