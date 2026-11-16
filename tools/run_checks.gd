@@ -918,5 +918,28 @@ func _check_no_main_menu() -> void:
 	_expect(demo.world().is_running() and not get_tree().paused and not demo.session().menu().is_open(),
 			"the game starts at once")
 	demo.session().toggle_pause()
-	_expect((demo.session().menu().get_node("%Resume") as Button).visible, "and the menu opens as a pause menu")
+	var menu := demo.session().menu()
+	_expect((menu.get_node("%Resume") as Button).visible, "and the menu opens as a pause menu")
+	_expect((menu.get_node("%Play") as Button).visible and (menu.get_node("%MainMenu") as Button).visible
+			and (menu.get_node("%Title") as Label).text == "TGC_PAUSE",
+			"by default with \"New game\" and \"Main menu\", titled \"Paused\"")
 	await _unmount(demo)
+
+	# An application: it opens on its screen, its menu behind a button, with nothing to start
+	# over and no main menu to go back to.
+	var app_config := _bench_config()
+	app_config.start_on_main_menu = false
+	app_config.show_new_game = false
+	app_config.show_main_menu_button = false
+	app_config.pause_title = "MY_APP"
+	var app := _mount(app_config)
+	await get_tree().process_frame
+	app.session().pause()
+	var app_menu := app.session().menu()
+	_expect(not (app_menu.get_node("%Play") as Button).visible and not (app_menu.get_node("%MainMenu") as Button).visible,
+			"an application hides \"New game\" and \"Main menu\"")
+	_expect((app_menu.get_node("%Resume") as Button).visible and (app_menu.get_node("%OpenSettings") as Button).visible
+			and (app_menu.get_node("%Quit") as Button).visible, "and keeps \"Resume\", \"Settings\" and \"Quit\"")
+	_expect((app_menu.get_node("%Title") as Label).text == "MY_APP", "its pause menu bears its own title")
+	_expect(get_viewport().gui_get_focus_owner() == app_menu.get_node("%Resume"), "the focus starts on \"Resume\"")
+	await _unmount(app)

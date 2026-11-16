@@ -146,9 +146,12 @@ func _ready() -> void:
 
 ## `in_game`: a game waits behind the menu (pause menu). Otherwise, it is the main menu.
 func open(in_game: bool) -> void:
+	var config := _session.config if _session != null else null
 	_resume.visible = in_game
-	_main_menu.visible = in_game
-	_title.text = "TGC_PAUSE" if in_game else _home_title
+	_main_menu.visible = in_game and (config == null or config.show_main_menu_button)
+	_play.visible = not in_game or config == null or config.show_new_game
+	var pause_title := config.pause_title if config != null and config.pause_title != "" else "TGC_PAUSE"
+	_title.text = pause_title if in_game else _home_title
 	_play.text = "TGC_NEW_GAME" if in_game else "TGC_PLAY"
 	visible = true
 	_hide_confirmation()

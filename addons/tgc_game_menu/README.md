@@ -78,6 +78,9 @@ the Inspector, and assign it to the session's `config`. Everything has a working
 | --- | --- | --- |
 | Menu | `title` | Main menu title: a translation key or plain text. Empty: the project's name. |
 | | `start_on_main_menu` | Off: a game starts at once, and the menu is only a pause menu. |
+| | `pause_title` | The pause menu's title: a translation key or plain text. Empty: *Paused*. |
+| | `show_new_game` | *New game* in the pause menu. Off for a tool or an application, with nothing to start over. |
+| | `show_main_menu_button` | *Main menu* in the pause menu. Off for a program that never shows a main menu. |
 | | `pause_on_focus_loss` | Pause when the window loses the focus during a game. |
 | | `hide_quit_on_web` | Hide *Quit* in a web build. |
 | | `confirm_progress_loss` | Ask before *New game*, *Main menu* and *Quit* abandon a game in progress. Off for a game that saves all the time. |

@@ -24,6 +24,15 @@ const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 ## The program opens on the main menu, paused, and waits for "Play". Off: a game starts at
 ## once, and the menu is only ever a pause menu.
 @export var start_on_main_menu := true
+## The pause menu's title: a translation key, or plain text. Empty: "Paused". An application
+## that opens straight on its screen, its menu behind a button, may show its own name.
+@export var pause_title := ""
+## "New game" in the pause menu. Off for a program with nothing to start over (a tool, an
+## application). The main menu's "Play" always shows.
+@export var show_new_game := true
+## "Main menu" in the pause menu. Off for a program that never shows a main menu
+## ([member start_on_main_menu] off), where it would lead nowhere useful.
+@export var show_main_menu_button := true
 ## A game in progress pauses itself when the window loses the focus.
 @export var pause_on_focus_loss := true
 ## "Quit" is hidden in a web build, where it would close nothing.
