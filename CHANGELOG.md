@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.3.0 — unreleased
+
+- **A pause menu for applications**, not only games: `pause_title` gives the pause menu a
+  title of its own (the application's name, for a menu behind a button), `show_new_game`
+  and `show_main_menu_button` hide *New game* and *Main menu*. With `start_on_main_menu`
+  off, a metronome, a tool or an editor opens straight on its screen, and its menu keeps
+  only *Resume*, *Settings* and *Quit*. `wording` set to `APPLICATION` makes *Quit game*
+  say *Quit*, and its question *Quit?*, in the four languages.
+- **A drop-down menu**: `presentation` set to `DROP_DOWN` hangs the menu under a button of
+  the game (`TgcGameMenu.drop_from()`), unrolls it from it and rolls it back into it
+  (`drop_down_seconds`), over a lighter veil a click on which closes the menu. Each level —
+  the root, *Settings*, a page — takes the place of the one before and morphs from its
+  shape, going down as going up. `TgcMenuSession.toggle_menu()` is a menu button's gesture: open, or close whatever
+  the menu shows. The defaults change nothing.
+
 ## 1.2.0 — 2026-10-13
 
 - **A live preview of the menu in the editor**: `TgcMenuPreview`, with a config, a theme to

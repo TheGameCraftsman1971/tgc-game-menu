@@ -17,6 +17,21 @@ const _DISPLAY_PAGE := "res://addons/tgc_game_menu/menu/tgc_display_page.tscn"
 const _SOUND_PAGE := "res://addons/tgc_game_menu/menu/tgc_sound_page.tscn"
 const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 
+## How the root and the Settings sub-menu show.
+enum Presentation {
+	## In the middle of the screen, over a veil.
+	CENTRED,
+	## Hanging under a button of the game ([method TgcGameMenu.drop_from]), unrolling from
+	## it and rolling back into it, like an application's menu; a click beside it closes it.
+	DROP_DOWN,
+}
+
+## What the menu calls the program when it offers to quit it.
+enum Wording {
+	GAME,
+	APPLICATION,
+}
+
 @export_group("Menu")
 ## The title of the main menu: a translation key, or plain text. Empty: the project's name
 ## ([code]application/config/name[/code]).
@@ -24,6 +39,23 @@ const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 ## The program opens on the main menu, paused, and waits for "Play". Off: a game starts at
 ## once, and the menu is only ever a pause menu.
 @export var start_on_main_menu := true
+## The pause menu's title: a translation key, or plain text. Empty: "Paused". An application
+## that opens straight on its screen, its menu behind a button, may show its own name.
+@export var pause_title := ""
+## "New game" in the pause menu. Off for a program with nothing to start over (a tool, an
+## application). The main menu's "Play" always shows.
+@export var show_new_game := true
+## "Main menu" in the pause menu. Off for a program that never shows a main menu
+## ([member start_on_main_menu] off), where it would lead nowhere useful.
+@export var show_main_menu_button := true
+## How "Quit" speaks: of the game ("Quit game", "Quit the game?") or of an application
+## ("Quit", "Quit?").
+@export var wording := Wording.GAME
+## Where the menu shows: centred, or dropping down from a button of the game (an
+## application's "burger" menu), each level taking the place of the one before.
+@export var presentation := Presentation.CENTRED
+## How long a drop-down menu takes to unroll, and to roll back (0: at once).
+@export_range(0.0, 1.0, 0.01) var drop_down_seconds := 0.18
 ## A game in progress pauses itself when the window loses the focus.
 @export var pause_on_focus_loss := true
 ## "Quit" is hidden in a web build, where it would close nothing.

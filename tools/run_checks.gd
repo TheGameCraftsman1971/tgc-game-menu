@@ -918,5 +918,93 @@ func _check_no_main_menu() -> void:
 	_expect(demo.world().is_running() and not get_tree().paused and not demo.session().menu().is_open(),
 			"the game starts at once")
 	demo.session().toggle_pause()
-	_expect((demo.session().menu().get_node("%Resume") as Button).visible, "and the menu opens as a pause menu")
+	var menu := demo.session().menu()
+	_expect((menu.get_node("%Resume") as Button).visible, "and the menu opens as a pause menu")
+	_expect((menu.get_node("%Play") as Button).visible and (menu.get_node("%MainMenu") as Button).visible
+			and (menu.get_node("%Title") as Label).text == "TGC_PAUSE",
+			"by default with \"New game\" and \"Main menu\", titled \"Paused\"")
 	await _unmount(demo)
+
+	# An application: it opens on its screen, its menu behind a button, with nothing to start
+	# over and no main menu to go back to.
+	var app_config := _bench_config()
+	app_config.start_on_main_menu = false
+	app_config.show_new_game = false
+	app_config.show_main_menu_button = false
+	app_config.pause_title = "MY_APP"
+	var app := _mount(app_config)
+	await get_tree().process_frame
+	app.session().pause()
+	var app_menu := app.session().menu()
+	_expect(not (app_menu.get_node("%Play") as Button).visible and not (app_menu.get_node("%MainMenu") as Button).visible,
+			"an application hides \"New game\" and \"Main menu\"")
+	_expect((app_menu.get_node("%Resume") as Button).visible and (app_menu.get_node("%OpenSettings") as Button).visible
+			and (app_menu.get_node("%Quit") as Button).visible, "and keeps \"Resume\", \"Settings\" and \"Quit\"")
+	_expect((app_menu.get_node("%Title") as Label).text == "MY_APP", "its pause menu bears its own title")
+	_expect(get_viewport().gui_get_focus_owner() == app_menu.get_node("%Resume"), "the focus starts on \"Resume\"")
+	_expect((app_menu.get_node("%Quit") as Button).text == "TGC_QUIT", "it still says \"Quit game\" by default")
+	await _unmount(app)
+	app_config.wording = TgcMenuConfig.Wording.APPLICATION
+	app = _mount(app_config)
+	await get_tree().process_frame
+	app.session().pause()
+	app_menu = app.session().menu()
+	var quit := app_menu.get_node("%Quit") as Button
+	_expect(quit.text == "TGC_QUIT_APP", "worded as an application, it says \"Quit\"")
+	quit.pressed.emit()
+	_expect(app_menu.is_confirming() and (app_menu.get_node("%Question") as Label).text == "TGC_CONFIRM_QUIT_APP"
+			and (app_menu.get_node("%ConfirmAction") as Button).text == "TGC_QUIT_APP", "and asks \"Quit?\"")
+	(app_menu.get_node("%Cancel") as Button).pressed.emit()
+	await _unmount(app)
+
+	# A drop-down menu, like an application's: it hangs under a button of the game.
+	app_config.presentation = TgcMenuConfig.Presentation.DROP_DOWN
+	app_config.drop_down_seconds = 0.1
+	app = _mount(app_config)
+	await get_tree().process_frame
+	var session := app.session()
+	app_menu = session.menu()
+	app_menu.drop_from(Rect2(32.0, 32.0, 80.0, 80.0))
+	session.toggle_menu()
+	var root := app_menu.get_node("%Root") as Control
+	_expect(get_tree().paused and app_menu.is_open() and root.position == Vector2(32.0, 122.0),
+			"\"toggle_menu\" opens a drop-down menu, under its button", str(root.position))
+	_expect(root.scale.y < 0.5, "folded at first: it unrolls from the button", str(root.scale))
+	await get_tree().create_timer(0.2, true).timeout
+	_expect(root.scale == Vector2.ONE, "unrolled", str(root.scale))
+	var settings := app_menu.get_node("%Settings") as Control
+	app_menu.show_page(TgcGameMenu.SETTINGS)
+	_expect(settings.position == Vector2(32.0, 122.0), "the Settings sub-menu takes its place, under the button")
+	_expect(settings.scale != Vector2.ONE and settings.modulate.a < 1.0,
+			"born at the root's size, it morphs into its own", str(settings.scale))
+	await get_tree().create_timer(0.2, true).timeout
+	_expect(settings.scale == Vector2.ONE and is_equal_approx(settings.modulate.a, 1.0), "and settles")
+	app_menu.show_page(&"sound")
+	var sound := app_menu.page(&"sound").get_node("Centre") as Control
+	_expect(sound.position == Vector2(32.0, 122.0) and sound.scale != Vector2.ONE,
+			"a page takes its place too, morphing from the sub-menu", str(sound.position))
+	await get_tree().create_timer(0.2, true).timeout
+	app_menu.back()
+	_expect(app_menu.current_page() == TgcGameMenu.SETTINGS and settings.scale != Vector2.ONE,
+			"going up, the sub-menu morphs back from the page's shape")
+	await get_tree().create_timer(0.2, true).timeout
+	session.toggle_menu()
+	_expect(not get_tree().paused and not app_menu.is_open() and app_menu.visible,
+			"\"toggle_menu\" closes it from the sub-menu at once, and it rolls back into its button")
+	await get_tree().create_timer(0.2, true).timeout
+	_expect(not app_menu.visible and root.scale == Vector2.ONE, "then it is gone, ready to unroll again")
+	session.toggle_menu()
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	(app_menu.get_node("Frame/Backdrop") as Control).gui_input.emit(click)
+	_expect(not get_tree().paused and not app_menu.is_open(), "a click beside it closes it")
+	await get_tree().create_timer(0.2, true).timeout
+	session.toggle_menu()
+	(app_menu.get_node("%Quit") as Button).pressed.emit()
+	_expect(app_menu.is_confirming() and app_menu.visible and root.scale == Vector2.ONE,
+			"a question shows whole, never folded")
+	(app_menu.get_node("Frame/Backdrop") as Control).gui_input.emit(click)
+	_expect(app_menu.is_confirming(), "and a click beside it does not answer it")
+	(app_menu.get_node("%Cancel") as Button).pressed.emit()
+	await _unmount(app)

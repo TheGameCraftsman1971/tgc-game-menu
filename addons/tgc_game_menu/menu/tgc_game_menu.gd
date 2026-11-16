@@ -45,6 +45,15 @@ extends CanvasLayer
 ## one). Without a game, "Play" acts at once: there is nothing to lose. "Quit" still
 ## asks ([member TgcMenuConfig.confirm_quit]), without the line about what would be lost.
 ##
+## ## Dropping down
+##
+## With [member TgcMenuConfig.presentation] set to `DROP_DOWN`, the menu hangs under the
+## button the game names ([method drop_from]): it unrolls from it when it opens and rolls
+## back into it when it closes, over a lighter veil; a click on the veil asks to resume.
+## Each level takes the place of the one before, under the button — the root, the Settings
+## sub-menu, a page (its first container) —, and **morphs** from its shape: going down or
+## up, the new panel is born at the size of the old one and grows or shrinks to its own.
+##
 ## A game that wants another look duplicates `tgc_game_menu.tscn`, keeps its unique names
 ## (`%Title`, `%Resume`, `%Play`, `%OpenSettings`, `%MainMenu`, `%Quit`, `%Settings`,
 ## `%PageButtons`, `%SettingsBack`, `%Pages`, `%Confirm`, `%Question`, `%Detail`, `%Cancel`,
@@ -55,6 +64,11 @@ signal resume_requested
 signal play_requested
 signal main_menu_requested
 signal quit_requested
+
+## The gap between a drop-down menu and the button it hangs from.
+const DROP_GAP := 10.0
+## How much the veil darkens the game under a drop-down menu.
+const DROP_VEIL := 0.3
 
 ## The menu's root, as [method current_page] and [method show_page] name it.
 const ROOT := &""
@@ -98,6 +112,11 @@ var _page := ROOT
 ## What the open confirmation will do, and the button that asked for it.
 var _pending := Callable()
 var _on_cancel := Callable()
+## The screen rectangle of the button a drop-down menu hangs from.
+var _origin := Rect2()
+var _tween: Tween
+## True while a drop-down menu rolls back into its button: closed, but still drawn.
+var _closing := false
 var _asker: Control
 
 
@@ -136,9 +155,15 @@ func _ready() -> void:
 	_home_title = config.title if config.title != "" \
 			else String(ProjectSettings.get_setting("application/config/name", ""))
 	_quit.visible = not (config.hide_quit_on_web and OS.has_feature("web"))
+	_quit.text = "TGC_QUIT_APP" if config.wording == TgcMenuConfig.Wording.APPLICATION else "TGC_QUIT"
 	for scene in config.page_scenes():
 		_add_page(scene)
 	_open_settings.visible = not _pages.is_empty()
+	if _drops():
+		var veil := get_node_or_null("Frame/Backdrop") as ColorRect
+		if veil != null:
+			veil.color.a = DROP_VEIL
+			veil.gui_input.connect(_on_veil_input)
 	if config.enable_saves:
 		_add_page(load(_SAVE_PAGE) as PackedScene, _open_save)
 		_add_page(load(_LOAD_PAGE) as PackedScene, _open_load)
@@ -146,13 +171,19 @@ func _ready() -> void:
 
 ## `in_game`: a game waits behind the menu (pause menu). Otherwise, it is the main menu.
 func open(in_game: bool) -> void:
+	var config := _session.config if _session != null else null
 	_resume.visible = in_game
-	_main_menu.visible = in_game
-	_title.text = "TGC_PAUSE" if in_game else _home_title
+	_main_menu.visible = in_game and (config == null or config.show_main_menu_button)
+	_play.visible = not in_game or config == null or config.show_new_game
+	var pause_title := config.pause_title if config != null and config.pause_title != "" else "TGC_PAUSE"
+	_title.text = pause_title if in_game else _home_title
 	_play.text = "TGC_NEW_GAME" if in_game else "TGC_PLAY"
+	_stop_rolling()
 	visible = true
 	_hide_confirmation()
 	show_page(ROOT)
+	if _drops():
+		_roll(true)
 
 
 func close() -> void:
@@ -166,11 +197,23 @@ func close() -> void:
 	_settings.visible = false
 	for id: StringName in _pages:
 		_pages[id].visible = false
-	visible = false
+	if _drops() and visible and _rolls():
+		_closing = true
+		_roll(false)
+	else:
+		visible = false
 
 
+## True while the menu shows — not while a drop-down menu rolls back into its button.
 func is_open() -> bool:
-	return visible
+	return visible and not _closing
+
+
+## Names the button a drop-down menu hangs from, by its rectangle on screen (in the
+## coordinates of the game's canvas, as [method Control.get_global_rect] gives them). Called
+## before each opening if the button can move.
+func drop_from(rect: Rect2) -> void:
+	_origin = rect
 
 
 ## True while a confirmation waits for an answer.
@@ -223,6 +266,11 @@ func show_page(target: StringName) -> void:
 	_settings.visible = target == SETTINGS
 	for id: StringName in _pages:
 		_pages[id].visible = id == target
+	if _drops():
+		var arriving := _hanger(target)
+		_hang(arriving)
+		if previous != target and visible and not _closing and _rolls():
+			_morph(_hanger(previous), arriving)
 	match target:
 		ROOT:
 			refresh_root()
@@ -252,6 +300,7 @@ func confirm(question: String, label: String, detail: String, on_accept: Callabl
 	_pending = on_accept
 	_on_cancel = on_cancel
 	_asker = asker if asker != null else get_viewport().gui_get_focus_owner()
+	_stop_rolling()
 	visible = true
 	_question.text = question
 	_detail.text = detail
@@ -290,7 +339,125 @@ func _ask(action: Signal, question: String, label: String, asker: Button, always
 
 func _ask_quit() -> void:
 	var always := _session != null and _session.config.confirm_quit
-	_ask(quit_requested, "TGC_CONFIRM_QUIT", "TGC_QUIT", _quit, always)
+	var application := _session != null and _session.config.wording == TgcMenuConfig.Wording.APPLICATION
+	_ask(quit_requested, "TGC_CONFIRM_QUIT_APP" if application else "TGC_CONFIRM_QUIT",
+			"TGC_QUIT_APP" if application else "TGC_QUIT", _quit, always)
+
+
+func _drops() -> bool:
+	return _session != null and _session.config.presentation == TgcMenuConfig.Presentation.DROP_DOWN
+
+
+func _rolls() -> bool:
+	return _session.config.drop_down_seconds > 0.0 and not _previewed()
+
+
+## Hangs the root and the Settings sub-menu under the button, then unrolls the one shown
+## from it (`opening`), or rolls it back and hides the menu.
+func _roll(opening: bool) -> void:
+	for holder in _hangers():
+		_hang(holder)
+	if not _rolls():
+		return
+	var shown := _settings if _settings.visible else _root
+	var folded := Vector2(0.35, 0.05)
+	if opening:
+		shown.scale = folded
+		_frame.modulate.a = 0.0
+	if _tween != null:
+		_tween.kill()
+	_tween = create_tween().set_parallel().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_tween.set_ease(Tween.EASE_OUT if opening else Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	var seconds := _session.config.drop_down_seconds
+	_tween.tween_property(shown, "scale", Vector2.ONE if opening else folded, seconds)
+	_tween.tween_property(_frame, "modulate:a", 1.0 if opening else 0.0, seconds)
+	if not opening:
+		_tween.chain().tween_callback(_rolled_back)
+
+
+## What hangs under the button for `target`: the root's or the sub-menu's holder, or a
+## page's first container (the page itself if it has none).
+func _hanger(target: StringName) -> Control:
+	match target:
+		ROOT:
+			return _root
+		SETTINGS:
+			return _settings
+	var page: Control = _pages.get(target)
+	if page == null:
+		return null
+	for child in page.get_children():
+		if child is Container:
+			return child
+	return page
+
+
+func _hangers() -> Array[Control]:
+	var out: Array[Control] = [_root, _settings]
+	for id: StringName in _pages:
+		var holder := _hanger(id)
+		if holder != null:
+			out.append(holder)
+	return out
+
+
+## Hangs `holder` under the button, at its own size.
+func _hang(holder: Control) -> void:
+	if holder == null:
+		return
+	holder.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	holder.size = holder.get_combined_minimum_size()
+	holder.position = Vector2(_origin.position.x, _origin.end.y + DROP_GAP)
+	holder.pivot_offset = Vector2.ZERO
+
+
+## The level `arriving` takes the place of `leaving`: born at its size, it grows or shrinks
+## to its own while it shows.
+func _morph(leaving: Control, arriving: Control) -> void:
+	if leaving == null or arriving == null or arriving.size.x <= 0.0 or arriving.size.y <= 0.0:
+		return
+	if _tween != null:
+		_tween.kill()
+	_unfold()
+	arriving.scale = Vector2(leaving.size.x / arriving.size.x, leaving.size.y / arriving.size.y)
+	arriving.modulate.a = 0.0
+	_tween = create_tween().set_parallel().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	var seconds := _session.config.drop_down_seconds
+	_tween.tween_property(arriving, "scale", Vector2.ONE, seconds)
+	_tween.tween_property(arriving, "modulate:a", 1.0, seconds * 0.7)
+
+
+func _rolled_back() -> void:
+	_closing = false
+	visible = false
+	_unfold()
+
+
+## Stops a drop-down menu rolling, and unfolds it at once.
+func _stop_rolling() -> void:
+	if _tween != null:
+		_tween.kill()
+		_tween = null
+	_closing = false
+	_unfold()
+
+
+func _unfold() -> void:
+	for holder in _hangers():
+		holder.scale = Vector2.ONE
+		holder.modulate.a = 1.0
+	_frame.modulate.a = 1.0
+
+
+## A click on the veil, beside a drop-down menu: the player wants the game back.
+func _on_veil_input(event: InputEvent) -> void:
+	var mouse := event as InputEventMouseButton
+	var touch := event as InputEventScreenTouch
+	var pressed := (mouse != null and mouse.pressed) or (touch != null and touch.pressed)
+	if pressed and not is_confirming() and _session != null and _session.is_in_game():
+		resume_requested.emit()
+		get_viewport().set_input_as_handled()
 
 
 func _accept() -> void:
