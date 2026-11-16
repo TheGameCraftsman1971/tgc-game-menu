@@ -51,8 +51,8 @@ enum Wording {
 ## How "Quit" speaks: of the game ("Quit game", "Quit the game?") or of an application
 ## ("Quit", "Quit?").
 @export var wording := Wording.GAME
-## Where the root and the Settings sub-menu show: centred, or dropping down from a button of
-## the game (an application's "burger" menu). The pages always show centred.
+## Where the menu shows: centred, or dropping down from a button of the game (an
+## application's "burger" menu), each level taking the place of the one before.
 @export var presentation := Presentation.CENTRED
 ## How long a drop-down menu takes to unroll, and to roll back (0: at once).
 @export_range(0.0, 1.0, 0.01) var drop_down_seconds := 0.18

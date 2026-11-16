@@ -972,9 +972,22 @@ func _check_no_main_menu() -> void:
 	_expect(root.scale.y < 0.5, "folded at first: it unrolls from the button", str(root.scale))
 	await get_tree().create_timer(0.2, true).timeout
 	_expect(root.scale == Vector2.ONE, "unrolled", str(root.scale))
+	var settings := app_menu.get_node("%Settings") as Control
 	app_menu.show_page(TgcGameMenu.SETTINGS)
-	_expect((app_menu.get_node("%Settings") as Control).position == Vector2(32.0, 122.0),
-			"the Settings sub-menu hangs there too")
+	_expect(settings.position == Vector2(32.0, 122.0), "the Settings sub-menu takes its place, under the button")
+	_expect(settings.scale != Vector2.ONE and settings.modulate.a < 1.0,
+			"born at the root's size, it morphs into its own", str(settings.scale))
+	await get_tree().create_timer(0.2, true).timeout
+	_expect(settings.scale == Vector2.ONE and is_equal_approx(settings.modulate.a, 1.0), "and settles")
+	app_menu.show_page(&"sound")
+	var sound := app_menu.page(&"sound").get_node("Centre") as Control
+	_expect(sound.position == Vector2(32.0, 122.0) and sound.scale != Vector2.ONE,
+			"a page takes its place too, morphing from the sub-menu", str(sound.position))
+	await get_tree().create_timer(0.2, true).timeout
+	app_menu.back()
+	_expect(app_menu.current_page() == TgcGameMenu.SETTINGS and settings.scale != Vector2.ONE,
+			"going up, the sub-menu morphs back from the page's shape")
+	await get_tree().create_timer(0.2, true).timeout
 	session.toggle_menu()
 	_expect(not get_tree().paused and not app_menu.is_open() and app_menu.visible,
 			"\"toggle_menu\" closes it from the sub-menu at once, and it rolls back into its button")

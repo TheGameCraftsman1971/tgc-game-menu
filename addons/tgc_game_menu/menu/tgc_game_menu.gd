@@ -47,10 +47,12 @@ extends CanvasLayer
 ##
 ## ## Dropping down
 ##
-## With [member TgcMenuConfig.presentation] set to `DROP_DOWN`, the root and the Settings
-## sub-menu hang under the button the game names ([method drop_from]): they unroll from it
-## when the menu opens and roll back into it when it closes, over a lighter veil; a click on
-## the veil asks to resume. The pages still show centred: they are too large to hang.
+## With [member TgcMenuConfig.presentation] set to `DROP_DOWN`, the menu hangs under the
+## button the game names ([method drop_from]): it unrolls from it when it opens and rolls
+## back into it when it closes, over a lighter veil; a click on the veil asks to resume.
+## Each level takes the place of the one before, under the button — the root, the Settings
+## sub-menu, a page (its first container) —, and **morphs** from its shape: going down or
+## up, the new panel is born at the size of the old one and grows or shrinks to its own.
 ##
 ## A game that wants another look duplicates `tgc_game_menu.tscn`, keeps its unique names
 ## (`%Title`, `%Resume`, `%Play`, `%OpenSettings`, `%MainMenu`, `%Quit`, `%Settings`,
@@ -264,6 +266,11 @@ func show_page(target: StringName) -> void:
 	_settings.visible = target == SETTINGS
 	for id: StringName in _pages:
 		_pages[id].visible = id == target
+	if _drops():
+		var arriving := _hanger(target)
+		_hang(arriving)
+		if previous != target and visible and not _closing and _rolls():
+			_morph(_hanger(previous), arriving)
 	match target:
 		ROOT:
 			refresh_root()
@@ -348,12 +355,8 @@ func _rolls() -> bool:
 ## Hangs the root and the Settings sub-menu under the button, then unrolls the one shown
 ## from it (`opening`), or rolls it back and hides the menu.
 func _roll(opening: bool) -> void:
-	var under := Vector2(_origin.position.x, _origin.end.y + DROP_GAP)
-	for holder: Control in [_root, _settings]:
-		holder.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		holder.size = holder.get_combined_minimum_size()
-		holder.position = under
-		holder.pivot_offset = Vector2.ZERO
+	for holder in _hangers():
+		_hang(holder)
 	if not _rolls():
 		return
 	var shown := _settings if _settings.visible else _root
@@ -372,6 +375,59 @@ func _roll(opening: bool) -> void:
 		_tween.chain().tween_callback(_rolled_back)
 
 
+## What hangs under the button for `target`: the root's or the sub-menu's holder, or a
+## page's first container (the page itself if it has none).
+func _hanger(target: StringName) -> Control:
+	match target:
+		ROOT:
+			return _root
+		SETTINGS:
+			return _settings
+	var page: Control = _pages.get(target)
+	if page == null:
+		return null
+	for child in page.get_children():
+		if child is Container:
+			return child
+	return page
+
+
+func _hangers() -> Array[Control]:
+	var out: Array[Control] = [_root, _settings]
+	for id: StringName in _pages:
+		var holder := _hanger(id)
+		if holder != null:
+			out.append(holder)
+	return out
+
+
+## Hangs `holder` under the button, at its own size.
+func _hang(holder: Control) -> void:
+	if holder == null:
+		return
+	holder.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	holder.size = holder.get_combined_minimum_size()
+	holder.position = Vector2(_origin.position.x, _origin.end.y + DROP_GAP)
+	holder.pivot_offset = Vector2.ZERO
+
+
+## The level `arriving` takes the place of `leaving`: born at its size, it grows or shrinks
+## to its own while it shows.
+func _morph(leaving: Control, arriving: Control) -> void:
+	if leaving == null or arriving == null or arriving.size.x <= 0.0 or arriving.size.y <= 0.0:
+		return
+	if _tween != null:
+		_tween.kill()
+	_unfold()
+	arriving.scale = Vector2(leaving.size.x / arriving.size.x, leaving.size.y / arriving.size.y)
+	arriving.modulate.a = 0.0
+	_tween = create_tween().set_parallel().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	var seconds := _session.config.drop_down_seconds
+	_tween.tween_property(arriving, "scale", Vector2.ONE, seconds)
+	_tween.tween_property(arriving, "modulate:a", 1.0, seconds * 0.7)
+
+
 func _rolled_back() -> void:
 	_closing = false
 	visible = false
@@ -388,8 +444,9 @@ func _stop_rolling() -> void:
 
 
 func _unfold() -> void:
-	_root.scale = Vector2.ONE
-	_settings.scale = Vector2.ONE
+	for holder in _hangers():
+		holder.scale = Vector2.ONE
+		holder.modulate.a = 1.0
 	_frame.modulate.a = 1.0
 
 
