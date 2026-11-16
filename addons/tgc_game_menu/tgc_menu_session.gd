@@ -245,6 +245,15 @@ func pause() -> void:
 	_menu.open(_in_game)
 
 
+## A menu button's gesture: opens the menu, or closes it whatever it shows — a page, the
+## Settings sub-menu, a question —, where the pause gesture climbs one level at a time.
+func toggle_menu() -> void:
+	if is_paused():
+		resume()
+	else:
+		pause()
+
+
 ## Resumes the game. Without a game there is nothing to resume, and the menu stays.
 func resume() -> void:
 	if not _in_game:

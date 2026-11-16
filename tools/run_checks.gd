@@ -956,3 +956,42 @@ func _check_no_main_menu() -> void:
 			and (app_menu.get_node("%ConfirmAction") as Button).text == "TGC_QUIT_APP", "and asks \"Quit?\"")
 	(app_menu.get_node("%Cancel") as Button).pressed.emit()
 	await _unmount(app)
+
+	# A drop-down menu, like an application's: it hangs under a button of the game.
+	app_config.presentation = TgcMenuConfig.Presentation.DROP_DOWN
+	app_config.drop_down_seconds = 0.1
+	app = _mount(app_config)
+	await get_tree().process_frame
+	var session := app.session()
+	app_menu = session.menu()
+	app_menu.drop_from(Rect2(32.0, 32.0, 80.0, 80.0))
+	session.toggle_menu()
+	var root := app_menu.get_node("%Root") as Control
+	_expect(get_tree().paused and app_menu.is_open() and root.position == Vector2(32.0, 122.0),
+			"\"toggle_menu\" opens a drop-down menu, under its button", str(root.position))
+	_expect(root.scale.y < 0.5, "folded at first: it unrolls from the button", str(root.scale))
+	await get_tree().create_timer(0.2, true).timeout
+	_expect(root.scale == Vector2.ONE, "unrolled", str(root.scale))
+	app_menu.show_page(TgcGameMenu.SETTINGS)
+	_expect((app_menu.get_node("%Settings") as Control).position == Vector2(32.0, 122.0),
+			"the Settings sub-menu hangs there too")
+	session.toggle_menu()
+	_expect(not get_tree().paused and not app_menu.is_open() and app_menu.visible,
+			"\"toggle_menu\" closes it from the sub-menu at once, and it rolls back into its button")
+	await get_tree().create_timer(0.2, true).timeout
+	_expect(not app_menu.visible and root.scale == Vector2.ONE, "then it is gone, ready to unroll again")
+	session.toggle_menu()
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	(app_menu.get_node("Frame/Backdrop") as Control).gui_input.emit(click)
+	_expect(not get_tree().paused and not app_menu.is_open(), "a click beside it closes it")
+	await get_tree().create_timer(0.2, true).timeout
+	session.toggle_menu()
+	(app_menu.get_node("%Quit") as Button).pressed.emit()
+	_expect(app_menu.is_confirming() and app_menu.visible and root.scale == Vector2.ONE,
+			"a question shows whole, never folded")
+	(app_menu.get_node("Frame/Backdrop") as Control).gui_input.emit(click)
+	_expect(app_menu.is_confirming(), "and a click beside it does not answer it")
+	(app_menu.get_node("%Cancel") as Button).pressed.emit()
+	await _unmount(app)

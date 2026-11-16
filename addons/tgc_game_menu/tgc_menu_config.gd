@@ -17,6 +17,15 @@ const _DISPLAY_PAGE := "res://addons/tgc_game_menu/menu/tgc_display_page.tscn"
 const _SOUND_PAGE := "res://addons/tgc_game_menu/menu/tgc_sound_page.tscn"
 const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 
+## How the root and the Settings sub-menu show.
+enum Presentation {
+	## In the middle of the screen, over a veil.
+	CENTRED,
+	## Hanging under a button of the game ([method TgcGameMenu.drop_from]), unrolling from
+	## it and rolling back into it, like an application's menu; a click beside it closes it.
+	DROP_DOWN,
+}
+
 ## What the menu calls the program when it offers to quit it.
 enum Wording {
 	GAME,
@@ -42,6 +51,11 @@ enum Wording {
 ## How "Quit" speaks: of the game ("Quit game", "Quit the game?") or of an application
 ## ("Quit", "Quit?").
 @export var wording := Wording.GAME
+## Where the root and the Settings sub-menu show: centred, or dropping down from a button of
+## the game (an application's "burger" menu). The pages always show centred.
+@export var presentation := Presentation.CENTRED
+## How long a drop-down menu takes to unroll, and to roll back (0: at once).
+@export_range(0.0, 1.0, 0.01) var drop_down_seconds := 0.18
 ## A game in progress pauses itself when the window loses the focus.
 @export var pause_on_focus_loss := true
 ## "Quit" is hidden in a web build, where it would close nothing.

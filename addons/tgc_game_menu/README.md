@@ -67,7 +67,10 @@ func _ready() -> void:
 Your game does not need to know whether it is paused: the session pauses the tree, so make
 sure the game's nodes are pausable (Godot's default) and that what must go on in pause
 (music, interface sounds) is set to `PROCESS_MODE_ALWAYS`. A game that ends by itself calls
-`_session.to_main_menu()`.
+`_session.to_main_menu()`. A menu button of your own (an application's "burger") calls
+`_session.toggle_menu()`: it opens the menu, or closes it whatever it shows; keep that
+button on a `CanvasLayer` above the menu's (layer 50), `PROCESS_MODE_ALWAYS`, so that it
+still answers while the tree is paused.
 
 ## Configure: `TgcMenuConfig`
 
@@ -82,6 +85,8 @@ the Inspector, and assign it to the session's `config`. Everything has a working
 | | `show_new_game` | *New game* in the pause menu. Off for a tool or an application, with nothing to start over. |
 | | `show_main_menu_button` | *Main menu* in the pause menu. Off for a program that never shows a main menu. |
 | | `wording` | `GAME` (*Quit game*, *Quit the game?*) or `APPLICATION` (*Quit*, *Quit?*). |
+| | `presentation` | `CENTRED`, or `DROP_DOWN`: the root and *Settings* hang under a button of yours (`session.menu().drop_from(button.get_global_rect())`), unroll from it and roll back into it; a click beside closes. Pages stay centred. |
+| | `drop_down_seconds` | How long it unrolls and rolls back (0: at once). |
 | | `pause_on_focus_loss` | Pause when the window loses the focus during a game. |
 | | `hide_quit_on_web` | Hide *Quit* in a web build. |
 | | `confirm_progress_loss` | Ask before *New game*, *Main menu* and *Quit* abandon a game in progress. Off for a game that saves all the time. |
