@@ -122,7 +122,6 @@ func _ready() -> void:
 	bindings = TgcControlBindings.new(config)
 	bindings.load_from_disk()
 	general.apply()
-	display.apply_to_window(get_window())
 	audio.apply()
 	general.changed.connect(_on_general_changed)
 	display.changed.connect(_on_display_changed)
@@ -139,6 +138,10 @@ func _ready() -> void:
 		# Deferred: whoever connects to `game_started` in its own `_ready()` runs after this
 		# one, its child's.
 		play.call_deferred()
+	# The window last: changing its mode or size draws a frame at once, in the middle of the
+	# game's own `_ready()`. Its first picture must already be the main menu, not the game
+	# without it.
+	display.apply_to_window(get_window())
 
 
 ## Prepares a session for [TgcMenuPreview], **before** it enters the tree: the settings at

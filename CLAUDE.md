@@ -142,6 +142,7 @@ on a high-density screen the window, and so the captures, are larger than `--res
 | **macOS gives a window leaving fullscreen its old position back**, after the animation | the window comes back off-centre | `TgcDisplaySettings._size_window` places it again 0.8 s later |
 | The wait for an input read in `_unhandled_input` | the left click cannot be bound, the hovered button takes it | read it in `_input`, keep presses only |
 | Default inputs read from the InputMap | "Reset" restores what an earlier instance remapped | read them from `ProjectSettings` (`input/<action>`); an undeclared action is snapshotted when the bindings are built |
+| **Changing the window's mode or size draws a frame at once** (macOS) | at launch, the game shows for an instant without its main menu, half set up | the session applies the window last in `_ready()`, once the menu is built and open |
 | A property set **after** `add_child` | `_ready()` has already read the player's files | set `TgcMenuSession.config` before `add_child` |
 | **A menu closed on a page** | the page stays marked visible, and shows through the next modal shown alone | `close()` puts the menu back to its root, every page hidden; the modal hides them all |
 | **A script that is not `@tool`, run in the editor** | "Attempt to call a method on a placeholder instance" | every add-on script is `@tool`; a game's page that is not is shown inert by the menu (`_inert_pages`) |
@@ -169,7 +170,9 @@ on a high-density screen the window, and so the captures, are larger than `--res
 
 **1.3.0, unreleased** (a pause menu for applications, the drop-down menu): merged into
 `main` on 2026-11-16, checked (bench: 241 checks, editor bench: 13), installed into the
-template (its bench: 52 checks) and into GrooveCraft. Still to do before tagging it: the
+template (its bench: 52 checks) and into GrooveCraft. Then, on the branch `menu-left-and-veil` (2026-11-24, asked
+for Airwolf Reborn): `horizontal_placement`, `vertical_placement`, `screen_margin` and `veil_opacity` (bench: 249 checks, editor
+bench: 13), installed into Airwolf Reborn. Still to do before tagging it: the
 version in `plugin.cfg`, the French documentation, new store screenshots.
 
 Before it, version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all

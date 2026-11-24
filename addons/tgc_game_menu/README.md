@@ -85,8 +85,11 @@ the Inspector, and assign it to the session's `config`. Everything has a working
 | | `show_new_game` | *New game* in the pause menu. Off for a tool or an application, with nothing to start over. |
 | | `show_main_menu_button` | *Main menu* in the pause menu. Off for a program that never shows a main menu. |
 | | `wording` | `GAME` (*Quit game*, *Quit the game?*) or `APPLICATION` (*Quit*, *Quit?*). |
-| | `presentation` | `CENTRED`, or `DROP_DOWN`: the menu hangs under a button of yours (`session.menu().drop_from(button.get_global_rect())`), unrolls from it and rolls back into it; a click beside closes. Each level (root, *Settings*, a page) takes the place of the one before and morphs from its shape. |
+| | `presentation` | `ON_SCREEN` (called `CENTRED` up to 1.2.0), or `DROP_DOWN`: the menu hangs under a button of yours (`session.menu().drop_from(button.get_global_rect())`), unrolls from it and rolls back into it; a click beside closes. Each level (root, *Settings*, a page) takes the place of the one before and morphs from its shape. |
 | | `drop_down_seconds` | How long it unrolls and rolls back (0: at once). |
+| | `horizontal_placement`, `vertical_placement` | On the screen: `LEFT`, `CENTRE` or `RIGHT`, with `TOP`, `CENTRE` or `BOTTOM`. The root, *Settings* and the pages stand there (a confirmation stays in the middle); the rest of the screen is left free for your scene. |
+| | `screen_margin` | Off the middle, the gap between the menu and the edge it stands against. |
+| | `veil_opacity` | How dark the veil over the game under the menu is (0.62; 0: none). A drop-down menu lays half of it. |
 | | `pause_on_focus_loss` | Pause when the window loses the focus during a game. |
 | | `hide_quit_on_web` | Hide *Quit* in a web build. |
 | | `confirm_progress_loss` | Ask before *New game*, *Main menu* and *Quit* abandon a game in progress. Off for a game that saves all the time. |

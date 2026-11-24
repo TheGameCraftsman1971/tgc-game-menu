@@ -1007,4 +1007,58 @@ func _check_no_main_menu() -> void:
 	(app_menu.get_node("Frame/Backdrop") as Control).gui_input.emit(click)
 	_expect(app_menu.is_confirming(), "and a click beside it does not answer it")
 	(app_menu.get_node("%Cancel") as Button).pressed.emit()
+	_expect(is_equal_approx((app_menu.get_node("Frame/Backdrop") as ColorRect).color.a, 0.31),
+			"a drop-down menu lays half the veil (0.31)")
+	await _unmount(app)
+
+	# A menu placed off the middle: the rest of the screen stays free for the game's scene.
+	var placed_config := _bench_config()
+	placed_config.horizontal_placement = TgcMenuConfig.HorizontalPlacement.LEFT
+	placed_config.screen_margin = 80.0
+	placed_config.veil_opacity = 0.25
+	app = _mount(placed_config)
+	await get_tree().process_frame
+	app_menu = app.session().menu()
+	var screen := app_menu.get_viewport().get_visible_rect().size
+	var panel := (app_menu.get_node("%Root/Panel") as Control).get_global_rect()
+	_expect(app_menu.is_open() and panel.position.x == 80.0 and panel.end.x < screen.x * 0.5,
+			"on the left, the main menu stands 80 px from the edge, in the left half of the screen",
+			"%s in %s" % [panel, screen])
+	_expect(absf(panel.get_center().y - screen.y * 0.5) < 1.0, "vertically in the middle",
+			"%.1f / %.1f" % [panel.get_center().y, screen.y])
+	_expect(is_equal_approx((app_menu.get_node("Frame/Backdrop") as ColorRect).color.a, 0.25),
+			"over the veil the config asks for (0.25)")
+	app_menu.show_page(TgcGameMenu.SETTINGS)
+	await get_tree().process_frame
+	var sub_menu := (app_menu.get_node("%Settings/Panel") as Control).get_global_rect()
+	app_menu.show_page(&"sound")
+	await get_tree().process_frame
+	var page_panel := (app_menu.page(&"sound").get_node("Centre/Panel") as Control).get_global_rect()
+	_expect(sub_menu.position.x == 80.0 and page_panel.position.x == 80.0,
+			"Settings and its pages stand there too", "%s, %s" % [sub_menu, page_panel])
+	app_menu.show_page(TgcGameMenu.ROOT)
+	(app_menu.get_node("%Quit") as Button).pressed.emit()
+	await get_tree().process_frame
+	var question := (app_menu.get_node("Frame/Confirm/Centre/Panel") as Control).get_global_rect()
+	_expect(absf(question.get_center().x - screen.x * 0.5) < 1.0 and absf(question.get_center().y - screen.y * 0.5) < 1.0,
+			"a confirmation still shows in the middle", str(question))
+	(app_menu.get_node("%Cancel") as Button).pressed.emit()
+	await _unmount(app)
+
+	placed_config.horizontal_placement = TgcMenuConfig.HorizontalPlacement.RIGHT
+	placed_config.vertical_placement = TgcMenuConfig.VerticalPlacement.BOTTOM
+	app = _mount(placed_config)
+	await get_tree().process_frame
+	panel = (app.session().menu().get_node("%Root/Panel") as Control).get_global_rect()
+	_expect(panel.end.is_equal_approx(screen - Vector2(80.0, 80.0)), "bottom right: 80 px from both edges",
+			"%s in %s" % [panel, screen])
+	await _unmount(app)
+
+	placed_config.horizontal_placement = TgcMenuConfig.HorizontalPlacement.CENTRE
+	placed_config.vertical_placement = TgcMenuConfig.VerticalPlacement.TOP
+	app = _mount(placed_config)
+	await get_tree().process_frame
+	panel = (app.session().menu().get_node("%Root/Panel") as Control).get_global_rect()
+	_expect(panel.position.y == 80.0 and absf(panel.get_center().x - screen.x * 0.5) < 1.0,
+			"top centre: 80 px from the top, in the middle across", "%s in %s" % [panel, screen])
 	await _unmount(app)
