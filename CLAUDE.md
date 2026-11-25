@@ -181,8 +181,10 @@ Simulator (346), Hotte Shot (166) and Airwolf Reborn. Then, on the branch `relea
 reference's new options, the store page's two new features), new store pictures (every
 screenshot retaken, cropped to 16:9 without the window's edge; the menu placed on the left and
 an application's drop-down menu, which `tools/capture.gd` now takes), `STORE.md` for 1.3.0.
-Merged into `main` and tagged `v1.3.0` on 2026-11-25. Still to do: the GitHub release
-with its zip, the store submission.
+Merged into `main` and tagged `v1.3.0` on 2026-11-25, released on GitHub with its zip
+(`tgc_game_menu-1.3.0.zip`), installed into the template (its bench: 52 checks), Hover Forge
+(398), Iron Man Simulator (346), Hotte Shot (166), GrooveCraft (188) and Airwolf Reborn (451).
+Still to do: the store submission (`STORE.md`).
 
 Before it, version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
 merged into `main`, tagged `v1.2.0` with a GitHub release, checked (bench: 220 checks, editor
