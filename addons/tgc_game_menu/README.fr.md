@@ -78,6 +78,10 @@ Votre jeu n'a pas besoin de savoir s'il est en pause : la session met l'arbre en
 Veillez donc à ce que les nœuds du jeu soient pausables (le défaut de Godot), et à ce que ce
 qui doit continuer pendant la pause (la musique, les sons d'interface) soit en
 `PROCESS_MODE_ALWAYS`. Un jeu qui se termine de lui-même appelle `_session.to_main_menu()`.
+Un bouton de menu à vous (le « hamburger » d'une application) appelle
+`_session.toggle_menu()` : il ouvre le menu, ou le ferme quoi qu'il montre ; placez ce
+bouton sur un `CanvasLayer` au-dessus de celui du menu (couche 50), en
+`PROCESS_MODE_ALWAYS`, pour qu'il réponde encore quand l'arbre est en pause.
 
 ## Régler : `TgcMenuConfig`
 
@@ -89,6 +93,15 @@ fonctionne.
 | --- | --- | --- |
 | Menu | `title` | Le titre du menu principal : une clé de traduction ou du texte brut. Vide : le nom du projet. |
 | | `start_on_main_menu` | Désactivé : une partie démarre aussitôt, et le menu n'est qu'un menu de pause. |
+| | `pause_title` | Le titre du menu de pause : une clé de traduction ou du texte brut. Vide : *Pause*. |
+| | `show_new_game` | *Nouvelle partie* dans le menu de pause. Désactivé pour un outil ou une application, sans rien à recommencer. |
+| | `show_main_menu_button` | *Menu principal* dans le menu de pause. Désactivé pour un programme qui ne montre jamais de menu principal. |
+| | `wording` | `GAME` (*Quitter le jeu*, *Quitter le jeu ?*) ou `APPLICATION` (*Quitter*, *Quitter ?*). |
+| | `presentation` | `ON_SCREEN` (nommé `CENTRED` jusqu'à la 1.2.0), ou `DROP_DOWN` : le menu pend sous un bouton à vous (`session.menu().drop_from(button.get_global_rect())`), s'en déroule et s'y enroule ; un clic à côté le ferme. Chaque niveau (la racine, *Réglages*, une page) prend la place du précédent et se transforme à partir de sa forme. |
+| | `drop_down_seconds` | Le temps qu'il met à se dérouler et à s'enrouler (0 : d'un coup). |
+| | `horizontal_placement`, `vertical_placement` | Sur l'écran : `LEFT`, `CENTRE` ou `RIGHT`, avec `TOP`, `CENTRE` ou `BOTTOM`. La racine, *Réglages* et les pages s'y tiennent (une confirmation reste au milieu) ; le reste de l'écran est laissé libre pour votre scène. |
+| | `screen_margin` | Hors du milieu, l'écart entre le menu et le bord contre lequel il se tient. |
+| | `veil_opacity` | L'opacité du voile posé sur le jeu sous le menu (0,62 ; 0 : aucun). Un menu déroulant en pose la moitié. |
 | | `pause_on_focus_loss` | Met en pause quand la fenêtre perd le focus pendant une partie. |
 | | `hide_quit_on_web` | Masque *Quitter le jeu* dans une version web. |
 | | `confirm_progress_loss` | Demande avant que *Nouvelle partie*, *Menu principal* et *Quitter le jeu* abandonnent une partie en cours. À désactiver pour un jeu qui sauvegarde en permanence. |

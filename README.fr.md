@@ -13,6 +13,7 @@ fichier. En anglais, français, allemand et espagnol.
 | ![Commandes](screenshots/fr_06_controls.png) | ![Affichage](screenshots/fr_04_display.png) |
 | ![Pause](screenshots/fr_09_pause.png) | ![Confirmation](screenshots/fr_10_confirm.png) |
 | ![Charger](screenshots/fr_09_load.png) | ![Sauvegarder](screenshots/fr_09_save.png) |
+| ![Placé à gauche, sous un voile léger](screenshots/fr_12_placed_left.png) | ![Déroulé d'un bouton](screenshots/fr_13_drop_down.png) |
 
 ![L'aperçu dans l'éditeur](screenshots/en_11_editor_preview.png)
 
@@ -20,6 +21,12 @@ fichier. En anglais, français, allemand et espagnol.
 
 - **Un menu, deux visages** : le menu principal au lancement, le menu de pause pendant une
   partie (Échap, Start, ou la fenêtre qui perd le focus).
+- **Là où votre jeu le veut** : centré, ou à gauche, à droite, en haut, en bas, sous un voile
+  aussi sombre ou aussi léger que vous le voulez — le reste de l'écran reste libre pour votre
+  scène.
+- **Pour les applications aussi** : un menu qui se déroule d'un bouton à vous et s'y enroule,
+  un menu de pause avec son propre titre, sans *Nouvelle partie* ni *Menu principal*, et
+  *Quitter* plutôt que *Quitter le jeu*.
 - **Un sous-menu Réglages** avec les pages Général, Affichage, Son et Commandes, chaque ligne
   et chaque page facultative, suivies de **vos propres pages**.
 - **Un remaniement qui respecte le joueur** : une colonne clavier-souris et une colonne
