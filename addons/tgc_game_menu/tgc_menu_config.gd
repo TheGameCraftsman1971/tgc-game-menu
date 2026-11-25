@@ -19,11 +19,27 @@ const _CONTROLS_PAGE := "res://addons/tgc_game_menu/menu/tgc_controls_page.tscn"
 
 ## How the root and the Settings sub-menu show.
 enum Presentation {
-	## In the middle of the screen, over a veil.
-	CENTRED,
+	## On the screen, over a veil, where [member horizontal_placement] and
+	## [member vertical_placement] put it: in the middle by default. (Called [code]CENTRED[/code]
+	## up to 1.2.0; the value is the same.)
+	ON_SCREEN,
 	## Hanging under a button of the game ([method TgcGameMenu.drop_from]), unrolling from
 	## it and rolling back into it, like an application's menu; a click beside it closes it.
 	DROP_DOWN,
+}
+
+## Where an on-screen menu stands across the screen.
+enum HorizontalPlacement {
+	LEFT,
+	CENTRE,
+	RIGHT,
+}
+
+## Where an on-screen menu stands up and down the screen.
+enum VerticalPlacement {
+	TOP,
+	CENTRE,
+	BOTTOM,
 }
 
 ## What the menu calls the program when it offers to quit it.
@@ -51,9 +67,22 @@ enum Wording {
 ## How "Quit" speaks: of the game ("Quit game", "Quit the game?") or of an application
 ## ("Quit", "Quit?").
 @export var wording := Wording.GAME
-## Where the menu shows: centred, or dropping down from a button of the game (an
-## application's "burger" menu), each level taking the place of the one before.
-@export var presentation := Presentation.CENTRED
+## Where the menu shows: on the screen (see the placements below), or dropping down from a
+## button of the game (an application's "burger" menu), each level taking the place of the
+## one before.
+@export var presentation := Presentation.ON_SCREEN
+## On the screen: left, in the middle or right. The root, Settings and the pages stand there;
+## a confirmation always shows in the middle. Off the middle, the rest of the screen stays
+## free for what the game shows behind its menu.
+@export var horizontal_placement := HorizontalPlacement.CENTRE
+## On the screen: at the top, in the middle or at the bottom.
+@export var vertical_placement := VerticalPlacement.CENTRE
+## Off the middle, the gap between the menu and the edge it stands against, in the pixels of
+## the game's canvas.
+@export_range(0.0, 600.0, 1.0, "suffix:px") var screen_margin := 96.0
+## How dark the veil laid over the game under the menu is: 0, none; 1, black. A drop-down
+## menu lays half of it, to keep the game in sight around the button.
+@export_range(0.0, 1.0, 0.01) var veil_opacity := 0.62
 ## How long a drop-down menu takes to unroll, and to roll back (0: at once).
 @export_range(0.0, 1.0, 0.01) var drop_down_seconds := 0.18
 ## A game in progress pauses itself when the window loses the focus.

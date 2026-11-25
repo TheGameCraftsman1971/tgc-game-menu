@@ -67,8 +67,8 @@ signal quit_requested
 
 ## The gap between a drop-down menu and the button it hangs from.
 const DROP_GAP := 10.0
-## How much the veil darkens the game under a drop-down menu.
-const DROP_VEIL := 0.3
+## The share of the config's veil a drop-down menu lays ([member TgcMenuConfig.veil_opacity]).
+const DROP_VEIL_SHARE := 0.5
 
 ## The menu's root, as [method current_page] and [method show_page] name it.
 const ROOT := &""
@@ -159,14 +159,18 @@ func _ready() -> void:
 	for scene in config.page_scenes():
 		_add_page(scene)
 	_open_settings.visible = not _pages.is_empty()
-	if _drops():
-		var veil := get_node_or_null("Frame/Backdrop") as ColorRect
-		if veil != null:
-			veil.color.a = DROP_VEIL
+	var veil := get_node_or_null("Frame/Backdrop") as ColorRect
+	if veil != null:
+		veil.color.a = config.veil_opacity * (DROP_VEIL_SHARE if _drops() else 1.0)
+		if _drops():
 			veil.gui_input.connect(_on_veil_input)
 	if config.enable_saves:
 		_add_page(load(_SAVE_PAGE) as PackedScene, _open_save)
 		_add_page(load(_LOAD_PAGE) as PackedScene, _open_load)
+	if not _drops() and (config.horizontal_placement != TgcMenuConfig.HorizontalPlacement.CENTRE
+			or config.vertical_placement != TgcMenuConfig.VerticalPlacement.CENTRE):
+		for holder in _hangers():
+			_place(holder, config.horizontal_placement, config.vertical_placement, config.screen_margin)
 
 
 ## `in_game`: a game waits behind the menu (pause menu). Otherwise, it is the main menu.
@@ -409,6 +413,38 @@ func _hang(holder: Control) -> void:
 	holder.size = holder.get_combined_minimum_size()
 	holder.position = Vector2(_origin.position.x, _origin.end.y + DROP_GAP)
 	holder.pivot_offset = Vector2.ZERO
+
+
+## Places `holder` (the root's, the sub-menu's or a page's container, one that centres what
+## it holds) on the screen. On an axis where it stands against an edge, it shrinks to its own
+## size there, `margin` from that edge; on a centred axis, it spans the screen, and centres.
+static func _place(holder: Control, across: TgcMenuConfig.HorizontalPlacement,
+		upright: TgcMenuConfig.VerticalPlacement, margin: float) -> void:
+	if holder == null:
+		return
+	var x := _edge(int(across), margin)
+	var y := _edge(int(upright), margin)
+	holder.anchor_left = x[0]
+	holder.anchor_right = x[1]
+	holder.offset_left = x[2]
+	holder.offset_right = x[3]
+	holder.grow_horizontal = x[4]
+	holder.anchor_top = y[0]
+	holder.anchor_bottom = y[1]
+	holder.offset_top = y[2]
+	holder.offset_bottom = y[3]
+	holder.grow_vertical = y[4]
+
+
+## The anchors, offsets and growth on one axis, for a placement at its start (0), middle (1)
+## or end (2).
+static func _edge(placement: int, margin: float) -> Array:
+	match placement:
+		0:
+			return [0.0, 0.0, margin, margin, Control.GROW_DIRECTION_END]
+		2:
+			return [1.0, 1.0, -margin, -margin, Control.GROW_DIRECTION_BEGIN]
+	return [0.0, 1.0, 0.0, 0.0, Control.GROW_DIRECTION_BOTH]
 
 
 ## The level `arriving` takes the place of `leaving`: born at its size, it grows or shrinks

@@ -2,6 +2,9 @@
 
 ## 1.3.0 — unreleased
 
+- **Printable keys named by their character**: the Controls page and a game's help said
+  "AsciiCircum" and "Dollar" for the ^ and $ of a French keyboard (`OS.get_keycode_string`'s
+  English names); they now say "^" and "$" — any key that prints, as it is engraved.
 - **A pause menu for applications**, not only games: `pause_title` gives the pause menu a
   title of its own (the application's name, for a menu behind a button), `show_new_game`
   and `show_main_menu_button` hide *New game* and *Main menu*. With `start_on_main_menu`
@@ -14,6 +17,17 @@
   the root, *Settings*, a page — takes the place of the one before and morphs from its
   shape, going down as going up. `TgcMenuSession.toggle_menu()` is a menu button's gesture: open, or close whatever
   the menu shows. The defaults change nothing.
+- **The menu where the game wants it**: `horizontal_placement` (left, centre, right) and
+  `vertical_placement` (top, centre, bottom) stand the root, *Settings* and the pages
+  anywhere on the screen, `screen_margin` from the edges they touch, leaving the rest to the
+  scene the game shows behind its menu. A confirmation stays in the middle. The
+  `presentation` that was `CENTRED` is now called `ON_SCREEN` (same value: saved configs
+  are unchanged), its placement in the middle by default.
+- **No stray first picture**: the session applies the window's settings once the menu is
+  built and open. Maximising or resizing the window draws a frame at once, which showed the
+  game without its main menu (the game's scene, not yet set up for it) on macOS.
+- **The veil's darkness is the game's**: `veil_opacity` (0.62 by default, as before). A
+  drop-down menu lays half of it (0.31, was 0.3).
 
 ## 1.2.0 — 2026-10-13
 
