@@ -174,7 +174,9 @@ template (its bench: 52 checks) and into GrooveCraft. Then, on the branch `menu-
 for Airwolf Reborn): `horizontal_placement`, `vertical_placement`, `screen_margin` and `veil_opacity` (bench: 249 checks, editor
 bench: 13), installed into Airwolf Reborn; then (2026-11-25) printable keys named by their
 character ("^", "$") rather than `OS.get_keycode_string`'s English names (bench: 250 checks),
-installed into Airwolf Reborn. Still to do before tagging it: the
+installed into Airwolf Reborn. Merged into `main` on 2026-11-25 (bench: 250 checks), installed
+into the template (its bench: 52 checks), GrooveCraft (188), Hover Forge (398), Iron Man
+Simulator (346), Hotte Shot (166) and Airwolf Reborn. Still to do before tagging it: the
 version in `plugin.cfg`, the French documentation, new store screenshots.
 
 Before it, version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
