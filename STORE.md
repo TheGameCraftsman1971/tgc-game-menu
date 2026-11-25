@@ -29,6 +29,8 @@ TGC Game Menu gives your game the main menu, pause menu and settings that player
 
 What it does:
 - One menu, two faces: the main menu at start, the pause menu during a game (Esc, Start, or the window losing the focus).
+- Where your game wants it: centred, or on the left or the right, at the top or the bottom, over a veil as dark or as light as you like, the rest of the screen left free for your scene.
+- For applications too: a menu that drops down from a button of yours and rolls back into it, a pause menu with its own title, without New game nor Main menu, and Quit rather than Quit game.
 - A Settings sub-menu with General, Display, Sound and Controls pages. Every row and every page is optional, and your own pages can be added after them.
 - Display: window mode, window size, vsync, frame rate limit, 3D render scale, MSAA and interface size, with your project settings as defaults.
 - Sound: one slider per audio bus, on a perceptual curve.
@@ -59,7 +61,7 @@ tag in the other number (`menus`, `setting`…), take the existing one.
 **AI usage disclosure**
 
 ```text
-This add-on was developed with substantial help from Claude, an AI model by Anthropic. Most of the GDScript code, the automated checks, the documentation and the translations (French, German, Spanish) were written by the AI, under the author's direction and decisions. The author tested the result in Godot 4.7.2; the add-on's own test suite (220 automated checks, plus checks run inside the editor) passes. The icon and the thumbnail are drawn by code; the screenshots are captures of the menu itself. No AI-generated image, sound or 3D model is included.
+This add-on was developed with substantial help from Claude, an AI model by Anthropic. Most of the GDScript code, the automated checks, the documentation and the translations (French, German, Spanish) were written by the AI, under the author's direction and decisions. The author tested the result in Godot 4.7.2; the add-on's own test suite (250 automated checks, plus checks run inside the editor) passes. The icon and the thumbnail are drawn by code; the screenshots are captures of the menu itself. No AI-generated image, sound or 3D model is included.
 ```
 
 ## Media
@@ -67,18 +69,18 @@ This add-on was developed with substantial help from Claude, an AI model by Anth
 | Field | File |
 | --- | --- |
 | Thumbnail (16:9) | `screenshots/store_thumbnail.png`, made by `tools/store_thumbnail.tscn` |
-| Screenshots, in this order | `store_thumbnail` again (the carousel's first picture), `store_title` (the icon and the name alone, as the reviewer suggested; `tools/store_thumbnail.tscn -- title`), `en_01_main_menu`, `en_02_settings`, `en_04_display`, `en_06_controls`, `en_11_editor_preview`, `en_09_pause`, `en_10_confirm`, `en_09_load`, `fr_09_save` (`.png`, in `screenshots/`) |
+| Screenshots, in this order | `store_thumbnail` again (the carousel's first picture), `store_title` (the icon and the name alone, as the reviewer suggested; `tools/store_thumbnail.tscn -- title`), `en_01_main_menu`, `en_02_settings`, `en_04_display`, `en_06_controls`, `en_12_placed_left`, `en_13_drop_down`, `en_11_editor_preview`, `en_09_pause`, `en_10_confirm`, `en_09_load`, `fr_09_save` (`.png`, in `screenshots/`) |
 | Icon, if a link is asked | `https://raw.githubusercontent.com/TheGameCraftsman1971/tgc-game-menu/main/screenshots/store_icon.png` |
 
 ## Versions
 
 | Field | Value |
 | --- | --- |
-| File | `build/tgc_game_menu-1.2.0.zip` (only `addons/tgc_game_menu/`, at the zip's root: Godot 4.7's installer keeps an `addons/` root), the same as the GitHub release's |
-| Name | `1.2.0` |
+| File | `build/tgc_game_menu-1.3.0.zip` (only `addons/tgc_game_menu/`, at the zip's root: Godot 4.7's installer keeps an `addons/` root), the same as the GitHub release's |
+| Name | `1.3.0` |
 | Minimum Godot version | 4.7 |
 | Maximum Godot version | — |
-| Changelog | the 1.2.0, 1.1.0 and 1.0.0 sections of `CHANGELOG.md` |
+| Changelog | the 1.3.0 section of `CHANGELOG.md` |
 | Additional information | `Enable "TGC Game Menu" in Project Settings > Plugins after installing.` |
 
 ## Pricing

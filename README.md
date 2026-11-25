@@ -13,6 +13,7 @@ French, German and Spanish.
 | ![Controls](screenshots/en_06_controls.png) | ![Display](screenshots/en_04_display.png) |
 | ![Pause](screenshots/en_09_pause.png) | ![Confirmation](screenshots/en_10_confirm.png) |
 | ![Load](screenshots/en_09_load.png) | ![Sauvegarder](screenshots/fr_09_save.png) |
+| ![Placed on the left, over a light veil](screenshots/en_12_placed_left.png) | ![Dropped down from a button](screenshots/en_13_drop_down.png) |
 
 ![The preview in the editor](screenshots/en_11_editor_preview.png)
 
@@ -20,6 +21,12 @@ French, German and Spanish.
 
 - **One menu, two faces**: the main menu at start, the pause menu during a game (Esc,
   Start, or the window losing the focus).
+- **Where your game wants it**: centred, or on the left or the right, at the top or the
+  bottom, over a veil as dark or as light as you like — the rest of the screen stays free
+  for your scene.
+- **For applications too**: a menu that drops down from a button of yours and rolls back
+  into it, a pause menu with its own title, without *New game* nor *Main menu*, and *Quit*
+  rather than *Quit game*.
 - **A Settings sub-menu** with the General, Display, Sound and Controls pages, each row and
   each page optional, plus **your own pages** after them.
 - **Remapping that respects players**: keyboard-and-mouse and gamepad columns that never

@@ -65,7 +65,7 @@ func _draw_thumbnail(root: Control) -> void:
 	column.add_child(icon)
 	column.add_child(_label("TGC Game Menu", 80, TEXT))
 	column.add_child(_label("The main menu, pause menu and settings\nyour Godot 4.7 game needs.", 32, MUTED))
-	var features := _label("Display · Sound · Remappable controls\nSaves and quick saves · Live editor preview", 28, TEXT)
+	var features := _label("Display · Sound · Remappable controls · Saves\nPlaced anywhere or dropped down · Live editor preview", 28, TEXT)
 	features.add_theme_constant_override("line_spacing", 10)
 	column.add_child(features)
 	column.add_child(_label("English · Français · Deutsch · Español", 26, MUTED))
