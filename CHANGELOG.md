@@ -2,6 +2,9 @@
 
 ## 1.3.0 — unreleased
 
+- **Printable keys named by their character**: the Controls page and a game's help said
+  "AsciiCircum" and "Dollar" for the ^ and $ of a French keyboard (`OS.get_keycode_string`'s
+  English names); they now say "^" and "$" — any key that prints, as it is engraved.
 - **A pause menu for applications**, not only games: `pause_title` gives the pause menu a
   title of its own (the application's name, for a menu behind a button), `show_new_game`
   and `show_main_menu_button` hide *New game* and *Main menu*. With `start_on_main_menu`

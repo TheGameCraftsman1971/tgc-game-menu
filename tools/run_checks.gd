@@ -309,6 +309,11 @@ func _check_catalogs() -> void:
 	var pad := InputEventJoypadButton.new()
 	pad.button_index = JOY_BUTTON_START
 	_expect(TgcInputLabels.of(pad) == "Start", "the Start button is named")
+	var printable := [TgcInputLabels.key_label(KEY_BRACKETLEFT), TgcInputLabels.key_label(KEY_BRACKETRIGHT),
+			TgcInputLabels.key_label(KEY_A), TgcInputLabels.key_label(KEY_F1), TgcInputLabels.key_label(KEY_KP_5)]
+	_expect(printable == ["[", "]", "A", "F1", "Kp 5"],
+			"a printable key is named by its character (\"[\", not \"BracketLeft\"); F1 and the keypad keep their names",
+			str(printable))
 	_expect(TgcInputLabels.first_of(&"not_an_action", false) == "?", "an unknown action is named \"?\"")
 	TranslationServer.set_locale(previous)
 

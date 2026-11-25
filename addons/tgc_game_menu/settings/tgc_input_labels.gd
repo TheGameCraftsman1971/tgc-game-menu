@@ -72,6 +72,9 @@ static func of(event: InputEvent) -> String:
 ## The label of a key **as it is engraved** on the player's keyboard: actions are bound to
 ## physical positions, and the W key of a QWERTY keyboard is the Z of an AZERTY one.
 ##
+## A printable key is named by its character ("^", "$", "é"), not by the English name
+## `OS.get_keycode_string` gives it ("AsciiCircum", "Dollar"): a key's code is its character.
+##
 ## The headless and web display servers know no keyboard layout, and complain at every
 ## question: there the physical position is read as is, so a web build names the keys as on
 ## a QWERTY keyboard.
@@ -89,6 +92,8 @@ static func key_label(physical: Key) -> String:
 		var engraved := DisplayServer.keyboard_get_label_from_physical(physical)
 		if engraved != KEY_NONE:
 			label = engraved
+	if label > KEY_SPACE and label < KEY_SPECIAL:
+		return String.chr(label)
 	return OS.get_keycode_string(label)
 
 

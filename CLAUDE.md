@@ -172,7 +172,9 @@ on a high-density screen the window, and so the captures, are larger than `--res
 `main` on 2026-11-16, checked (bench: 241 checks, editor bench: 13), installed into the
 template (its bench: 52 checks) and into GrooveCraft. Then, on the branch `menu-left-and-veil` (2026-11-24, asked
 for Airwolf Reborn): `horizontal_placement`, `vertical_placement`, `screen_margin` and `veil_opacity` (bench: 249 checks, editor
-bench: 13), installed into Airwolf Reborn. Still to do before tagging it: the
+bench: 13), installed into Airwolf Reborn; then (2026-11-25) printable keys named by their
+character ("^", "$") rather than `OS.get_keycode_string`'s English names (bench: 250 checks),
+installed into Airwolf Reborn. Still to do before tagging it: the
 version in `plugin.cfg`, the French documentation, new store screenshots.
 
 Before it, version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
