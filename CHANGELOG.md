@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0 — unreleased
+## 1.3.0 — 2026-11-25
 
 - **Printable keys named by their character**: the Controls page and a game's help said
   "AsciiCircum" and "Dollar" for the ^ and $ of a French keyboard (`OS.get_keycode_string`'s

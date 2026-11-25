@@ -168,7 +168,7 @@ on a high-density screen the window, and so the captures, are larger than `--res
 
 ## Where this stands
 
-**1.3.0, unreleased** (a pause menu for applications, the drop-down menu): merged into
+**1.3.0, tagged `v1.3.0` on 2026-11-25** (a pause menu for applications, the drop-down menu): merged into
 `main` on 2026-11-16, checked (bench: 241 checks, editor bench: 13), installed into the
 template (its bench: 52 checks) and into GrooveCraft. Then, on the branch `menu-left-and-veil` (2026-11-24, asked
 for Airwolf Reborn): `horizontal_placement`, `vertical_placement`, `screen_margin` and `veil_opacity` (bench: 249 checks, editor
@@ -181,7 +181,8 @@ Simulator (346), Hotte Shot (166) and Airwolf Reborn. Then, on the branch `relea
 reference's new options, the store page's two new features), new store pictures (every
 screenshot retaken, cropped to 16:9 without the window's edge; the menu placed on the left and
 an application's drop-down menu, which `tools/capture.gd` now takes), `STORE.md` for 1.3.0.
-Still to do: merge it, tag `v1.3.0` with its GitHub release and zip, submit to the store.
+Merged into `main` and tagged `v1.3.0` on 2026-11-25. Still to do: the GitHub release
+with its zip, the store submission.
 
 Before it, version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
 merged into `main`, tagged `v1.2.0` with a GitHub release, checked (bench: 220 checks, editor
