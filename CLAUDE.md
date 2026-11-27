@@ -184,7 +184,11 @@ an application's drop-down menu, which `tools/capture.gd` now takes), `STORE.md`
 Merged into `main` and tagged `v1.3.0` on 2026-11-25, released on GitHub with its zip
 (`tgc_game_menu-1.3.0.zip`), installed into the template (its bench: 52 checks), Hover Forge
 (398), Iron Man Simulator (346), Hotte Shot (166), GrooveCraft (188) and Airwolf Reborn (451).
-Still to do: the store submission (`STORE.md`).
+Then (2026-11-27, branch `project-icon`) a new store icon, the same picture as the project's
+`icon.svg` (which was still the template's placeholder): `screenshots/store_icon.svg` and its
+256 px `store_icon.png`, then `store_thumbnail.png` and `store_title.png` taken again. Outside
+`addons/`, so neither the `v1.3.0` zip nor the installed copies change. Still to do: the store
+submission (`STORE.md`).
 
 Before it, version **1.2.0** (editor preview) after **1.1.0** (saves) and **1.0.0**, the first: all
 merged into `main`, tagged `v1.2.0` with a GitHub release, checked (bench: 220 checks, editor
